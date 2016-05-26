@@ -9,7 +9,7 @@
 # General Settings
 #-------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 2.8.4)
-project(AirShow)
+project(Duck)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=gnu++0x")
 
 #set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/lib)
@@ -44,7 +44,7 @@ set(EXTERNAL_LIBS
 # Project's Includes
 #-------------------------------------------------------------------------------
 include_directories(
-
+    include/
 )
 
 #===============================================================================
@@ -58,12 +58,12 @@ set(
 #===============================================================================
 # Executable
 #-------------------------------------------------------------------------------
-add_executable(air_show ${SOURCE_FILES})
+add_executable(duck ${SOURCE_FILES})
 
 #===============================================================================
 # Linking
 #-------------------------------------------------------------------------------
-target_link_libraries (air_show ${EXTERNAL_LIBS})
+target_link_libraries (duck ${EXTERNAL_LIBS})
 
 #===============================================================================
 # Definitions
@@ -80,9 +80,9 @@ add_definitions(
 # Copy Resources
 #-------------------------------------------------------------------------------
 add_custom_command(
-        TARGET air_show PRE_BUILD
+        TARGET duck PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory   # Copy resources
-        ${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:air_show>/res
+        ${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:duck>/res
 )
 
 #===============================================================================
@@ -92,7 +92,7 @@ file(GLOB ConfigFiles ${CMAKE_SOURCE_DIR}/config/*.ini)
 
 foreach(ConfigFiles ${ConfigFiles})
     add_custom_command(
-            TARGET air_show PRE_BUILD COMMAND ${CMAKE_COMMAND} -E
-            copy  ${ConfigFiles} $<TARGET_FILE_DIR:air_show>
+            TARGET duck PRE_BUILD COMMAND ${CMAKE_COMMAND} -E
+            copy  ${ConfigFiles} $<TARGET_FILE_DIR:duck>
     )
 endforeach()
