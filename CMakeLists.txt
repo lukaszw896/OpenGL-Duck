@@ -29,6 +29,7 @@ include_directories(
         external/inih/cpp/
         external/inih/
         external/SOIL_/
+        external/SOIL_/src/
 )
 
 set(EXTERNAL_LIBS
@@ -53,6 +54,9 @@ include_directories(
 set(
         SOURCE_FILES
         src/main.cpp
+        src/Mesh.cpp
+        include/Mesh.h
+        include/Camera.h
 )
 
 #===============================================================================
