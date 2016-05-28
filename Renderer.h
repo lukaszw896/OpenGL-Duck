@@ -33,7 +33,6 @@ private:
     GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
     GLfloat lastFrame = 0.0f;  	// Time of last frame
     GLfloat lastX = 400, lastY = 300;
-
     vector<Mesh*> meshVector;
 
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

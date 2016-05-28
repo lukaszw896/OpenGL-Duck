@@ -17,15 +17,17 @@ public:
     }
 
     void initQuadBuffers();
+    void initCubeBuffers();
     Mesh* getQuad();
+    Mesh* getCube();
 
 private:
     MeshLoader();
 
     //Quad
-    GLuint quadVBO;
     GLuint quadVAO;
-    GLuint quadEBO;
+
+    GLuint cubeVAO;
 };
 
 

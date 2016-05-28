@@ -49,7 +49,7 @@ Renderer::Renderer() {
     GLuint texture;
     loadTexture(&texture,"res/textures/container.png");
 
-    Mesh* quad = meshLoader.getQuad();
+   /* Mesh* quad = meshLoader.getQuad();
     quad->loadProgram(shaderProgram);
     quad->loadTexture(texture);
     quad->setTranslation(0.f,0.f,-0.5f);
@@ -75,6 +75,35 @@ Renderer::Renderer() {
     quad4->setTranslation(-0.5f,0.f,0.f);
     quad4->setYRotation(-3.14/2);
     meshVector.push_back(quad4);
+
+    Mesh* cube = meshLoader.getCube();
+    cube->loadProgram(shaderProgram);
+    cube->loadTexture(texture);
+    cube->setTranslation(4.f,0,0);
+    meshVector.push_back(cube);*/
+
+    glm::vec3 cubePositions[] = {
+            glm::vec3( 0.0f,  0.0f,  0.0f),
+            glm::vec3( 2.0f,  5.0f, -15.0f),
+            glm::vec3(-1.5f, -2.2f, -2.5f),
+            glm::vec3(-3.8f, -2.0f, -12.3f),
+            glm::vec3( 2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f,  3.0f, -7.5f),
+            glm::vec3( 1.3f, -2.0f, -2.5f),
+            glm::vec3( 1.5f,  2.0f, -2.5f),
+            glm::vec3( 1.5f,  0.2f, -1.5f),
+            glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
+    Mesh* cubes;
+    for(int i=0;i<10;i++)
+    {
+        cubes = meshLoader.getCube();
+        cubes->loadProgram(shaderProgram);
+        cubes->loadTexture(texture);
+        cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
+        meshVector.push_back(cubes);
+    }
 }
 
 void Renderer::render() {
