@@ -6,17 +6,14 @@
 #include "Camera.h"
 // GLFW
 #include <glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <iostream>
-#include <math.h>
-#include <Mesh.h>
+
+#include <Mesh/Mesh.h>
+#include <Mesh/MeshLoader.h>
 
 
 using namespace std;
 
-Camera* camera;
+Camera& camera = Camera::getInstance();
 bool keys[1024];
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;  	// Time of last frame
@@ -27,12 +24,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if(camera->fov >= 1.0f && camera->fov <= 45.0f)
-        camera->fov -= yoffset;
-    if(camera->fov <= 1.0f)
-        camera->fov = 1.0f;
-    if(camera->fov >= 45.0f)
-        camera->fov = 45.0f;
+    if(camera.fov >= 1.0f && camera.fov <= 45.0f)
+        camera.fov -= yoffset;
+    if(camera.fov <= 1.0f)
+        camera.fov = 1.0f;
+    if(camera.fov >= 45.0f)
+        camera.fov = 45.0f;
 }
 void do_movement();
 void loadTexture(GLuint* texture, const char* path);
@@ -73,21 +70,36 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
     //init objects
 
+    MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
 
     GLuint shaderProgram;
     ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
     GLuint texture;
     loadTexture(&texture,"res/textures/container.png");
-    camera =  new Camera;
 
-    Mesh quad = Mesh(camera);
+    Mesh quad = meshLoader.getQuad();
     quad.loadProgram(shaderProgram);
     quad.loadTexture(texture);
+    quad.setTranslation(0.f,0.f,-0.5f);
 
-    Mesh quad2 = Mesh(camera);
+    Mesh quad2 = meshLoader.getQuad();
     quad2.loadProgram(shaderProgram);
     quad2.loadTexture(texture);
-    quad2.setTranslation(0.5f,-0.5f,-3.0f);
+    quad2.setTranslation(0.f,0.f,0.5);
+    quad2.setXRotation(3.14);
+
+    Mesh quad3 = meshLoader.getQuad();
+    quad3.loadProgram(shaderProgram);
+    quad3.loadTexture(texture);
+    quad3.setTranslation(0.5f,0.f,0.f);
+    quad3.setYRotation(3.14/2);
+
+    Mesh quad4 = meshLoader.getQuad();
+    quad4.loadProgram(shaderProgram);
+    quad4.loadTexture(texture);
+    quad4.setTranslation(-0.5f,0.f,0.f);
+    quad4.setYRotation(-3.14/2);
+
 
 
     //game loop
@@ -109,9 +121,11 @@ int main()
         GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
         do_movement();
-        camera->updateCameraView();
+        camera.updateCameraView();
         quad.render();
         quad2.render();
+        quad3.render();
+        quad4.render();
 
         glfwSwapBuffers(window);
     }
@@ -134,35 +148,40 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         keys[key] = false;
 }
 bool firstMouse = true;
+
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if(firstMouse)
+    if(GLFW_PRESS == glfwGetMouseButton(window,0) && firstMouse)
     {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
+    if(GLFW_PRESS == glfwGetMouseButton(window,0)) {
+        GLfloat xoffset = xpos - lastX;
+        GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates range from bottom to top
+        lastX = xpos;
+        lastY = ypos;
 
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates range from bottom to top
-    lastX = xpos;
-    lastY = ypos;
+        GLfloat sensitivity = 0.5f;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
 
-    GLfloat sensitivity = 0.05f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+        camera.yaw += xoffset;
+        camera.pitch += yoffset;
+        if (camera.pitch > 89.0f)
+            camera.pitch = 89.0f;
+        if (camera.pitch < -89.0f)
+            camera.pitch = -89.0f;
+        glm::vec3 front;
+        front.x = cos(glm::radians(camera.pitch)) * cos(glm::radians(camera.yaw));
+        front.y = sin(glm::radians(camera.pitch));
+        front.z = cos(glm::radians(camera.pitch)) * sin(glm::radians(camera.yaw));
+        camera.cameraFront = glm::normalize(front);
+    } else{
+        firstMouse = true;
+    }
 
-    camera->yaw   += xoffset;
-    camera->pitch += yoffset;
-    if(camera->pitch > 89.0f)
-        camera->pitch =  89.0f;
-    if(camera->pitch < -89.0f)
-        camera->pitch = -89.0f;
-    glm::vec3 front;
-    front.x = cos(glm::radians(camera->pitch)) * cos(glm::radians(camera->yaw));
-    front.y = sin(glm::radians(camera->pitch));
-    front.z = cos(glm::radians(camera->pitch)) * sin(glm::radians(camera->yaw));
-    camera->cameraFront = glm::normalize(front);
 }
 
 void loadTexture(GLuint* texture, const char* path)
@@ -186,11 +205,11 @@ void do_movement()
     // Camera controls
     GLfloat cameraSpeed = 5.0f * deltaTime;
     if(keys[GLFW_KEY_W])
-        camera->cameraPos += cameraSpeed * camera->cameraFront;
+        camera.cameraPos += cameraSpeed * camera.cameraFront;
     if(keys[GLFW_KEY_S])
-        camera->cameraPos -= cameraSpeed * camera->cameraFront;
+        camera.cameraPos -= cameraSpeed * camera.cameraFront;
     if(keys[GLFW_KEY_A])
-        camera->cameraPos -= glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) * cameraSpeed;
+        camera.cameraPos -= glm::normalize(glm::cross(camera.cameraFront, camera.cameraUp)) * cameraSpeed;
     if(keys[GLFW_KEY_D])
-        camera->cameraPos += glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) * cameraSpeed;
+        camera.cameraPos += glm::normalize(glm::cross(camera.cameraFront, camera.cameraUp)) * cameraSpeed;
 }

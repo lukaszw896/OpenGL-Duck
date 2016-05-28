@@ -22,24 +22,30 @@ class Mesh {
 
 
 public:
-    Mesh(Camera* camera);
+    Mesh(GLuint VAO);
 
     void render();
     void loadTexture(GLuint texture);
     void loadProgram(GLuint shaderProgram);
     void setTranslation(GLfloat xTranslation, GLfloat yTranslation, GLfloat zTranslation);
+    void setRotation(GLfloat,GLfloat,GLfloat);
+    void setXRotation(GLfloat);
+    void setYRotation(GLfloat);
+    void setZRotation(GLfloat);
 private:
 
-    Camera* camera;
-    GLuint VBO;
+    Camera& camera = Camera::getInstance() ;
     GLuint VAO;
-    GLuint EBO;
     GLuint texture;
     GLuint shaderProgram;
 
     GLfloat xTranslation = 0.0f;
     GLfloat yTranslation = 0.0f;
     GLfloat zTranslation = 0.0f;
+
+    GLfloat xRotation = 0.0f;
+    GLfloat yRotation = 0.0f;
+    GLfloat zRotation = 0.0f;
 
 
 };

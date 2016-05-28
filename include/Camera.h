@@ -14,8 +14,12 @@
 
 class Camera {
 public:
-    Camera(){
-        printf("Camera constructor");
+
+    static Camera& getInstance()
+    {
+        static Camera instance;
+
+        return instance;
     }
 
     glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
@@ -33,6 +37,9 @@ public:
     {
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     }
+
+private:
+    Camera(){printf("kek");}
 };
 
 

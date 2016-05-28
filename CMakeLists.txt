@@ -54,10 +54,10 @@ include_directories(
 set(
         SOURCE_FILES
         src/main.cpp
-        src/Mesh.cpp
-        include/Mesh.h
+        src/Mesh/Mesh.cpp
+        include/Mesh/Mesh.h
         include/Camera.h
-)
+        src/MeshLoader.cpp include/Mesh/MeshLoader.h)
 
 #===============================================================================
 # Executable
