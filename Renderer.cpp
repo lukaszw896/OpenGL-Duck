@@ -142,6 +142,32 @@ void Renderer::render() {
         glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
+
+        GLint matAmbientLoc  = glGetUniformLocation(lightShader, "material.ambient");
+        GLint matDiffuseLoc  = glGetUniformLocation(lightShader, "material.diffuse");
+        GLint matSpecularLoc = glGetUniformLocation(lightShader, "material.specular");
+        GLint matShineLoc    = glGetUniformLocation(lightShader, "material.shininess");
+
+        glUniform3f(matAmbientLoc,  1.0f, 0.5f, 0.31f);
+        glUniform3f(matDiffuseLoc,  1.0f, 0.5f, 0.31f);
+        glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
+        glUniform1f(matShineLoc,    32.0f);
+
+        GLint lightAmbientLoc  = glGetUniformLocation(lightShader, "light.ambient");
+        GLint lightDiffuseLoc  = glGetUniformLocation(lightShader, "light.diffuse");
+        GLint lightSpecularLoc = glGetUniformLocation(lightShader, "light.specular");
+
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+
+        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // Decrease the influence
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // Low influence
+
+        glUniform3f(lightAmbientLoc, ambientColor.x, ambientColor.y, ambientColor.z);
+        glUniform3f(lightDiffuseLoc, diffuseColor.x, diffuseColor.y, diffuseColor.z);
+        glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
         //UNIFORM EXAMPLE
         /*// Update the uniform color
         GLfloat timeValue = glfwGetTime();
