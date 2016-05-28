@@ -16,22 +16,49 @@ void Mesh::render(){
     // Create transformations
     glm::mat4 projection;
     projection = glm::perspective(camera.fov, 800.f / 480.f, 0.1f, 100.0f);
-    glm::mat4 view;
+    glm::mat4 model;
+    model = glm::translate(model, glm::vec3(xTranslation,yTranslation,zTranslation));
+    model = glm::rotate(model, xRotation, glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, yRotation, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, zRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+
     // Note that we're translating the scene in the reverse direction of where we want to move
-    glm::mat4 transform;
-    transform = glm::translate(transform, glm::vec3(xTranslation,yTranslation,zTranslation));
-    transform = glm::rotate(transform, xRotation, glm::vec3(1.0f, 0.0f, 0.0f));
-    transform = glm::rotate(transform, yRotation, glm::vec3(0.0f, 1.0f, 0.0f));
-    transform = glm::rotate(transform, zRotation, glm::vec3(0.0f, 0.0f, 1.0f));
-    transform = projection*camera.view*transform;
 
     // Get matrix's uniform location and set matrix
-    GLint transformLoc = glGetUniformLocation(shaderProgram, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+     GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+     GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
+     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view));
+     GLint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES,0,this->numOfVertices);
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+
+    ///
+    /*// Create transformations
+    glm::mat4 projection;
+    projection = glm::perspective(camera.fov, 800.f / 480.f, 0.1f, 100.0f);
+    glm::mat4 model;
+    model = glm::rotate(model, xRotation, glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, yRotation, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, zRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 view;
+    // Note that we're translating the scene in the reverse direction of where we want to move
+    view = glm::translate(view, glm::vec3(xTranslation,yTranslation,zTranslation));
+
+    // Get matrix's uniform location and set matrix
+    /* GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+     GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
+     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+     GLint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));*/
+   /* glm::mat4 transform;
+    transform = projection*view*model;
+    GLint modelLoc = glGetUniformLocation(shaderProgram, "transform");*/
 }
 
 void Mesh::loadTexture(GLuint texture) {

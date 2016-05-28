@@ -17,7 +17,7 @@ public:
     }
 
     void initQuadBuffers();
-    Mesh getQuad();
+    Mesh* getQuad();
 
 private:
     MeshLoader();

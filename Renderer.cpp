@@ -49,31 +49,31 @@ Renderer::Renderer() {
     GLuint texture;
     loadTexture(&texture,"res/textures/container.png");
 
-    Mesh quad = meshLoader.getQuad();
-    quad.loadProgram(shaderProgram);
-    quad.loadTexture(texture);
-    quad.setTranslation(0.f,0.f,-0.5f);
+    Mesh* quad = meshLoader.getQuad();
+    quad->loadProgram(shaderProgram);
+    quad->loadTexture(texture);
+    quad->setTranslation(0.f,0.f,-0.5f);
     meshVector.push_back(quad);
 
-    Mesh quad2 = meshLoader.getQuad();
-    quad2.loadProgram(shaderProgram);
-    quad2.loadTexture(texture);
-    quad2.setTranslation(0.f,0.f,0.5);
-    quad2.setXRotation(3.14);
+    Mesh* quad2 = meshLoader.getQuad();
+    quad2->loadProgram(shaderProgram);
+    quad2->loadTexture(texture);
+    quad2->setTranslation(0.f,0.f,0.5f);
+    quad2->setXRotation(3.14);
     meshVector.push_back(quad2);
 
-    Mesh quad3 = meshLoader.getQuad();
-    quad3.loadProgram(shaderProgram);
-    quad3.loadTexture(texture);
-    quad3.setTranslation(0.5f,0.f,0.f);
-    quad3.setYRotation(3.14/2);
+    Mesh* quad3 = meshLoader.getQuad();
+    quad3->loadProgram(shaderProgram);
+    quad3->loadTexture(texture);
+    quad3->setTranslation(0.5f,0.f,0.f);
+    quad3->setYRotation(3.14/2);
     meshVector.push_back(quad3);
 
-    Mesh quad4 = meshLoader.getQuad();
-    quad4.loadProgram(shaderProgram);
-    quad4.loadTexture(texture);
-    quad4.setTranslation(-0.5f,0.f,0.f);
-    quad4.setYRotation(-3.14/2);
+    Mesh* quad4 = meshLoader.getQuad();
+    quad4->loadProgram(shaderProgram);
+    quad4->loadTexture(texture);
+    quad4->setTranslation(-0.5f,0.f,0.f);
+    quad4->setYRotation(-3.14/2);
     meshVector.push_back(quad4);
 }
 
@@ -98,7 +98,7 @@ void Renderer::render() {
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
         do_movement();
         camera.updateCameraView();
-        for(int i=0;i<meshVector.size();i++){meshVector[i].render();}
+        for(int i=0;i<meshVector.size();i++){meshVector[i]->render();}
 
         glfwSwapBuffers(window);
     }

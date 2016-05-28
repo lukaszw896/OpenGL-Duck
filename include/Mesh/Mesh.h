@@ -32,6 +32,7 @@ public:
     void setXRotation(GLfloat);
     void setYRotation(GLfloat);
     void setZRotation(GLfloat);
+    GLint numOfVertices;
 private:
 
     Camera& camera = Camera::getInstance() ;
@@ -46,6 +47,8 @@ private:
     GLfloat xRotation = 0.0f;
     GLfloat yRotation = 0.0f;
     GLfloat zRotation = 0.0f;
+
+
 
 
 };

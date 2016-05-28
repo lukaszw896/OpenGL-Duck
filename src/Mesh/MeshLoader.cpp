@@ -18,7 +18,9 @@ void MeshLoader::initQuadBuffers() {
             0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
             0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
             -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,    // Top Left
+            0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f   // Top Right
     };
 
     GLuint quadindices[] = {  // Note that we start from 0!
@@ -42,8 +44,8 @@ void MeshLoader::initQuadBuffers() {
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadvertices), quadvertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadindices), quadindices, GL_STATIC_DRAW);
+    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadindices), quadindices, GL_STATIC_DRAW);*/
 
     // 3. Then set our vertex attributes pointers
     // Position attribute
@@ -58,9 +60,12 @@ void MeshLoader::initQuadBuffers() {
 
     //4. Unbind the VAO
     glBindVertexArray(0);
+
+
 }
 
-Mesh MeshLoader::getQuad() {
-
-    return Mesh(quadVAO);
+Mesh* MeshLoader::getQuad() {
+    Mesh* mesh = new Mesh(quadVAO);
+    mesh->numOfVertices = 6;
+    return mesh;
 }
