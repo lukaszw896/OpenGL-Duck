@@ -11,7 +11,10 @@ Mesh::Mesh(GLuint vao) {
 void Mesh::render(){
     // Draw the triangle
     glUseProgram(shaderProgram);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
 
     // Create transformations
     glm::mat4 projection;
@@ -64,6 +67,14 @@ void Mesh::render(){
 
 void Mesh::loadTexture(GLuint texture) {
     this->texture = texture;
+}
+
+void Mesh::loadDiffuseMap(GLuint diffuseMap) {
+    this->diffuseMap = diffuseMap;
+}
+
+void Mesh::loadSpecularMap(GLuint specularMap) {
+    this->specularMap = specularMap;
 }
 
 void Mesh::loadProgram(GLuint shaderProgram) {

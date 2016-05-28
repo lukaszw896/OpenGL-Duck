@@ -26,6 +26,8 @@ public:
 
     void render();
     void loadTexture(GLuint texture);
+    void loadDiffuseMap(GLuint diffuseMap);
+    void loadSpecularMap(GLuint specularMap);
     void loadProgram(GLuint shaderProgram);
     void setTranslation(GLfloat xTranslation, GLfloat yTranslation, GLfloat zTranslation);
     void setTranslation(glm::vec3);
@@ -40,6 +42,8 @@ private:
     Camera& camera = Camera::getInstance() ;
     GLuint VAO;
     GLuint texture;
+    GLuint diffuseMap;
+    GLuint specularMap;
     GLuint shaderProgram;
 
     GLfloat xTranslation = 0.0f;

@@ -36,6 +36,7 @@ private:
     vector<Mesh*> meshVector;
     glm::vec3 lightPos;
     GLuint lightShader;
+    GLuint cubeTexture;
 
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     {

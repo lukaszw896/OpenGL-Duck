@@ -46,9 +46,11 @@ Renderer::Renderer() {
     MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
 
     lightShader;
-   /*ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
-    GLuint texture;
-    loadTexture(&texture,"res/textures/container.png");*/
+    //ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
+    GLuint diffuseTexture;
+    loadTexture(&diffuseTexture,"res/textures/container2.png");
+    GLuint specularTexture;
+    loadTexture(&specularTexture,"res/textures/container2_specular.png");
     ShaderLoader::loadProgram(&lightShader,"res/shaders/standardVertexShader.vs","res/shaders/lightColorFragmentShader.fs");
 
 
@@ -103,7 +105,9 @@ Renderer::Renderer() {
     {
         cubes = meshLoader.getCube();
         cubes->loadProgram(lightShader);
-        //cubes->loadTexture(texture);
+       // cubes->loadTexture(cubeTexture);
+        cubes->loadDiffuseMap(diffuseTexture);
+        cubes->loadSpecularMap(specularTexture);
         cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
         meshVector.push_back(cubes);
     }
@@ -143,13 +147,13 @@ void Renderer::render() {
         glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
 
-        GLint matAmbientLoc  = glGetUniformLocation(lightShader, "material.ambient");
-        GLint matDiffuseLoc  = glGetUniformLocation(lightShader, "material.diffuse");
+        /*GLint matAmbientLoc  = glGetUniformLocation(lightShader, "material.ambient");
+        GLint matDiffuseLoc  = glGetUniformLocation(lightShader, "material.diffuse");*/
         GLint matSpecularLoc = glGetUniformLocation(lightShader, "material.specular");
         GLint matShineLoc    = glGetUniformLocation(lightShader, "material.shininess");
 
-        glUniform3f(matAmbientLoc,  1.0f, 0.5f, 0.31f);
-        glUniform3f(matDiffuseLoc,  1.0f, 0.5f, 0.31f);
+        /*glUniform3f(matAmbientLoc,  1.0f, 0.5f, 0.31f);
+        glUniform3f(matDiffuseLoc,  1.0f, 0.5f, 0.31f);*/
         glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
         glUniform1f(matShineLoc,    32.0f);
 
@@ -168,6 +172,9 @@ void Renderer::render() {
         glUniform3f(lightAmbientLoc, ambientColor.x, ambientColor.y, ambientColor.z);
         glUniform3f(lightDiffuseLoc, diffuseColor.x, diffuseColor.y, diffuseColor.z);
         glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+
+        glUniform1i(glGetUniformLocation(lightShader, "material.diffuse"), 0);
+        glUniform1i(glGetUniformLocation(lightShader, "material.specular"), 1);
         //UNIFORM EXAMPLE
         /*// Update the uniform color
         GLfloat timeValue = glfwGetTime();
