@@ -21,6 +21,7 @@ void Mesh::render(){
     model = glm::rotate(model, xRotation, glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, yRotation, glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, zRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::scale(model,glm::vec3(scale));
 
     // Note that we're translating the scene in the reverse direction of where we want to move
 
@@ -75,6 +76,11 @@ void Mesh::setTranslation(GLfloat xTranslation, GLfloat yTranslation, GLfloat zT
     this->zTranslation = zTranslation;
 }
 
+void Mesh::setTranslation(glm::vec3 vec)
+{
+    this->setTranslation(vec.x,vec.y,vec.z);
+}
+
 void Mesh::setRotation(GLfloat rotateX, GLfloat rotateY, GLfloat rotateZ) {
     setXRotation(rotateX);
     setYRotation(rotateY);
@@ -91,4 +97,8 @@ void Mesh::setYRotation(GLfloat yRotation) {
 
 void Mesh::setZRotation(GLfloat zRotation) {
     this->zRotation = zRotation;
+}
+
+void Mesh::setScale(GLfloat scale) {
+    this->scale = scale;
 }

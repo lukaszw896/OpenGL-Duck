@@ -28,10 +28,12 @@ public:
     void loadTexture(GLuint texture);
     void loadProgram(GLuint shaderProgram);
     void setTranslation(GLfloat xTranslation, GLfloat yTranslation, GLfloat zTranslation);
+    void setTranslation(glm::vec3);
     void setRotation(GLfloat,GLfloat,GLfloat);
     void setXRotation(GLfloat);
     void setYRotation(GLfloat);
     void setZRotation(GLfloat);
+    void setScale(GLfloat);
     GLint numOfVertices;
 private:
 
@@ -47,6 +49,8 @@ private:
     GLfloat xRotation = 0.0f;
     GLfloat yRotation = 0.0f;
     GLfloat zRotation = 0.0f;
+
+    GLfloat scale = 1.f;
 
 
 

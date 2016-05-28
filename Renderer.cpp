@@ -41,46 +41,49 @@ Renderer::Renderer() {
     glfwSetCursorPosCallback(window, &mouse_callback);
     glfwSetScrollCallback(window, &scroll_callback);
     //init objects
+     lightPos =  glm::vec3(1.2f, 1.0f, 2.0f);
 
     MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
 
-    GLuint shaderProgram;
-    ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
+    lightShader;
+   /*ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
     GLuint texture;
-    loadTexture(&texture,"res/textures/container.png");
+    loadTexture(&texture,"res/textures/container.png");*/
+    ShaderLoader::loadProgram(&lightShader,"res/shaders/standardVertexShader.vs","res/shaders/lightColorFragmentShader.fs");
 
-   /* Mesh* quad = meshLoader.getQuad();
-    quad->loadProgram(shaderProgram);
-    quad->loadTexture(texture);
-    quad->setTranslation(0.f,0.f,-0.5f);
-    meshVector.push_back(quad);
 
-    Mesh* quad2 = meshLoader.getQuad();
-    quad2->loadProgram(shaderProgram);
-    quad2->loadTexture(texture);
-    quad2->setTranslation(0.f,0.f,0.5f);
-    quad2->setXRotation(3.14);
-    meshVector.push_back(quad2);
+    /* Mesh* quad = meshLoader.getQuad();
+     quad->loadProgram(shaderProgram);
+     quad->loadTexture(texture);
+     quad->setTranslation(0.f,0.f,-0.5f);
+     meshVector.push_back(quad);
 
-    Mesh* quad3 = meshLoader.getQuad();
-    quad3->loadProgram(shaderProgram);
-    quad3->loadTexture(texture);
-    quad3->setTranslation(0.5f,0.f,0.f);
-    quad3->setYRotation(3.14/2);
-    meshVector.push_back(quad3);
+     Mesh* quad2 = meshLoader.getQuad();
+     quad2->loadProgram(shaderProgram);
+     quad2->loadTexture(texture);
+     quad2->setTranslation(0.f,0.f,0.5f);
+     quad2->setXRotation(3.14);
+     meshVector.push_back(quad2);
 
-    Mesh* quad4 = meshLoader.getQuad();
-    quad4->loadProgram(shaderProgram);
-    quad4->loadTexture(texture);
-    quad4->setTranslation(-0.5f,0.f,0.f);
-    quad4->setYRotation(-3.14/2);
-    meshVector.push_back(quad4);
+     Mesh* quad3 = meshLoader.getQuad();
+     quad3->loadProgram(shaderProgram);
+     quad3->loadTexture(texture);
+     quad3->setTranslation(0.5f,0.f,0.f);
+     quad3->setYRotation(3.14/2);
+     meshVector.push_back(quad3);
 
-    Mesh* cube = meshLoader.getCube();
-    cube->loadProgram(shaderProgram);
-    cube->loadTexture(texture);
-    cube->setTranslation(4.f,0,0);
-    meshVector.push_back(cube);*/
+     Mesh* quad4 = meshLoader.getQuad();
+     quad4->loadProgram(shaderProgram);
+     quad4->loadTexture(texture);
+     quad4->setTranslation(-0.5f,0.f,0.f);
+     quad4->setYRotation(-3.14/2);
+     meshVector.push_back(quad4);
+
+     Mesh* cube = meshLoader.getCube();
+     cube->loadProgram(shaderProgram);
+     cube->loadTexture(texture);
+     cube->setTranslation(4.f,0,0);
+     meshVector.push_back(cube);*/
 
     glm::vec3 cubePositions[] = {
             glm::vec3( 0.0f,  0.0f,  0.0f),
@@ -99,11 +102,20 @@ Renderer::Renderer() {
     for(int i=0;i<10;i++)
     {
         cubes = meshLoader.getCube();
-        cubes->loadProgram(shaderProgram);
-        cubes->loadTexture(texture);
+        cubes->loadProgram(lightShader);
+        //cubes->loadTexture(texture);
         cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
         meshVector.push_back(cubes);
     }
+
+    GLuint lampShader;
+    ShaderLoader::loadProgram(&lampShader,"res/shaders/lampVertexShader.vs","res/shaders/lampFragmentShader.fs");
+
+    Mesh* lamp = meshLoader.getCube();
+    lamp->loadProgram(lampShader);
+    lamp->setTranslation(lightPos);
+    lamp->setScale(0.2f);
+    meshVector.push_back(lamp);
 }
 
 void Renderer::render() {
@@ -119,6 +131,17 @@ void Renderer::render() {
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+
+        glUseProgram(lightShader);
+        GLint objectColorLoc = glGetUniformLocation(lightShader, "objectColor");
+        GLint lightColorLoc  = glGetUniformLocation(lightShader, "lightColor");
+        GLint lightPosLoc = glGetUniformLocation(lightShader, "lightPos");
+        GLint viewPosLoc = glGetUniformLocation(lightShader, "viewPos");
+        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+        glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
         //UNIFORM EXAMPLE
         /*// Update the uniform color
         GLfloat timeValue = glfwGetTime();
