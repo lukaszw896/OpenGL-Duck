@@ -112,6 +112,16 @@ Renderer::Renderer() {
         meshVector.push_back(cubes);
     }
 
+    Mesh* duck = meshLoader.loadFromAszFile("res/models/duck.txt");
+    duck->loadProgram(lightShader);
+    GLuint duckTex;
+    loadTexture(&duckTex,"res/textures/ducktex.jpg");
+    duck->loadDiffuseMap(duckTex);
+    duck->loadSpecularMap(duckTex);
+    duck->setTranslation(0.f,1.f,0.f);
+    duck->setScale(0.01f);
+    meshVector.push_back(duck);
+
     GLuint lampShader;
     ShaderLoader::loadProgram(&lampShader,"res/shaders/lampVertexShader.vs","res/shaders/lampFragmentShader.fs");
 
@@ -162,9 +172,12 @@ void Renderer::render() {
         GLint lightSpecularLoc = glGetUniformLocation(lightShader, "light.specular");
 
         glm::vec3 lightColor;
-        lightColor.x = sin(glfwGetTime() * 2.0f);
+       /* lightColor.x = sin(glfwGetTime() * 2.0f);
         lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);*/
+        lightColor.x = 1.f;
+        lightColor.y = 1.f;
+        lightColor.z = 1.f;
 
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // Decrease the influence
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // Low influence
