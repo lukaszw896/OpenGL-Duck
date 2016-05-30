@@ -57,7 +57,7 @@ set(
         src/Mesh/Mesh.cpp
         include/Mesh/Mesh.h
         include/Camera.h
-        src/Mesh/MeshLoader.cpp include/Mesh/MeshLoader.h Renderer.cpp Renderer.h)
+        src/Mesh/MeshLoader.cpp include/Mesh/MeshLoader.h Renderer.cpp Renderer.h src/DuckMovement.cpp include/DuckMovement.h)
 
 #===============================================================================
 # Executable

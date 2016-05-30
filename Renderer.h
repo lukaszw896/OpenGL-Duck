@@ -17,6 +17,8 @@
 #include <Mesh/Mesh.h>
 #include <Mesh/MeshLoader.h>
 #include <c++/vector>
+#include <DuckMovement.h>
+
 
 using namespace std;
 
@@ -37,6 +39,10 @@ private:
     glm::vec3 lightPos;
     GLuint lightShader;
     GLuint cubeTexture;
+
+    Mesh* duck;
+    DuckMovement duckMovement;
+
 
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     {

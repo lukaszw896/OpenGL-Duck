@@ -44,6 +44,7 @@ Renderer::Renderer() {
      lightPos =  glm::vec3(1.2f, 1.0f, 2.0f);
 
     MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
+    duckMovement = DuckMovement();
 
     lightShader;
     //ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
@@ -100,7 +101,7 @@ Renderer::Renderer() {
             glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-    Mesh* cubes;
+   /* Mesh* cubes;
     for(int i=0;i<10;i++)
     {
         cubes = meshLoader.getCube();
@@ -110,15 +111,15 @@ Renderer::Renderer() {
         cubes->loadSpecularMap(specularTexture);
         cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
         meshVector.push_back(cubes);
-    }
+    }*/
 
-    Mesh* duck = meshLoader.loadFromAszFile("res/models/duck.txt");
+    duck = meshLoader.loadFromAszFile("res/models/duck.txt");
     duck->loadProgram(lightShader);
     GLuint duckTex;
     loadTexture(&duckTex,"res/textures/ducktex.jpg");
     duck->loadDiffuseMap(duckTex);
     duck->loadSpecularMap(duckTex);
-    duck->setTranslation(0.f,1.f,0.f);
+    duck->setTranslation(0.f,0.0,0.f);
     duck->setScale(0.01f);
     meshVector.push_back(duck);
 
@@ -145,7 +146,9 @@ void Renderer::render() {
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
+        glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
+        glm::vec3 duckTranslation = vec3(duckPosition.x,0.0,duckPosition.y);
+        duck->setTranslation(duckTranslation);
 
         glUseProgram(lightShader);
         GLint objectColorLoc = glGetUniformLocation(lightShader, "objectColor");

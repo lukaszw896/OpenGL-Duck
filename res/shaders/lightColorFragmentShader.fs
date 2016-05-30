@@ -45,8 +45,11 @@ void main()
           vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
 
           // Specular
+          //V = normalize(viewPos - FragPos)
           vec3 viewDir = normalize(viewPos - FragPos);
+          //R = reflect(-lightDir, norm)
           vec3 reflectDir = reflect(-lightDir, norm);
+
           float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
           vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 
