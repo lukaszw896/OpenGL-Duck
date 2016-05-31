@@ -38,9 +38,13 @@ private:
     vector<Mesh*> meshVector;
     glm::vec3 lightPos;
     GLuint lightShader;
+    GLuint skyBoxShader;
+    GLuint waterShader;
+
     GLuint cubeTexture;
 
     Mesh* duck;
+    Mesh* skyBox;
     DuckMovement duckMovement;
 
 
@@ -68,6 +72,7 @@ private:
     void my_mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
     void loadTexture(GLuint* texture, const char* path);
+    GLuint loadCubemap(vector<const GLchar*> faces);
 
     void do_movement();
 

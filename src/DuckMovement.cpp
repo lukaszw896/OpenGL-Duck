@@ -51,8 +51,8 @@ void DuckMovement::genRandControlPoints(int numOfControlPoints) {
 
 
 float DuckMovement::getRandomNumber(){
-    float LO = -5.f;
-    float HI = 5.f;
+    float LO = -0.8f;
+    float HI = 0.8f;
 
     return (LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO))));
 }

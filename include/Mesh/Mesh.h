@@ -25,6 +25,7 @@ public:
     Mesh(GLuint VAO);
 
     void render();
+    void renderAsSkyBox();
     void loadTexture(GLuint texture);
     void loadDiffuseMap(GLuint diffuseMap);
     void loadSpecularMap(GLuint specularMap);

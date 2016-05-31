@@ -11,7 +11,7 @@ MeshLoader::MeshLoader() {
 
     initQuadBuffers();
     initCubeBuffers();
-
+    initSkyBoxBuffers();
 }
 
 
@@ -131,6 +131,77 @@ void MeshLoader::initCubeBuffers() {
     a++;*/
 }
 
+void MeshLoader::initSkyBoxBuffers() {
+    GLfloat vertices[] = {
+            // Positions
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            -1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f
+    };
+    GLuint cubeVBO;
+    glGenBuffers(1, &cubeVBO);
+    glGenVertexArrays(1, &skyBoxVAO);
+
+    glBindVertexArray(skyBoxVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, skyBoxVAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadindices), quadindices, GL_STATIC_DRAW);*/
+
+    // 3. Then set our vertex attributes pointers
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    // Normal value
+    /*glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    //Texture attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);*/
+    //4. Unbind the VAO
+    glBindVertexArray(0);
+}
+
 Mesh* MeshLoader::getQuad() {
     Mesh* mesh = new Mesh(quadVAO);
     mesh->numOfVertices = 6;
@@ -139,6 +210,12 @@ Mesh* MeshLoader::getQuad() {
 
 Mesh* MeshLoader::getCube() {
     Mesh* mesh = new Mesh(cubeVAO);
+    mesh->numOfVertices = 36;
+    return mesh;
+}
+
+Mesh* MeshLoader::getSkyBox() {
+    Mesh* mesh = new Mesh(skyBoxVAO);
     mesh->numOfVertices = 36;
     return mesh;
 }

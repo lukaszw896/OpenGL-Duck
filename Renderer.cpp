@@ -41,7 +41,7 @@ Renderer::Renderer() {
     glfwSetCursorPosCallback(window, &mouse_callback);
     glfwSetScrollCallback(window, &scroll_callback);
     //init objects
-     lightPos =  glm::vec3(1.2f, 1.0f, 2.0f);
+     lightPos =  glm::vec3(1.05f, 0.4f, -0.0f);
 
     MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
     duckMovement = DuckMovement();
@@ -54,14 +54,47 @@ Renderer::Renderer() {
     loadTexture(&specularTexture,"res/textures/container2_specular.png");
     ShaderLoader::loadProgram(&lightShader,"res/shaders/standardVertexShader.vs","res/shaders/lightColorFragmentShader.fs");
 
+    //Cube map
 
-    /* Mesh* quad = meshLoader.getQuad();
-     quad->loadProgram(shaderProgram);
-     quad->loadTexture(texture);
-     quad->setTranslation(0.f,0.f,-0.5f);
+    vector<const GLchar*> faces;
+    faces.push_back("res/textures/sor_sea/sea_rt.jpg");
+    faces.push_back("res/textures/sor_sea/sea_lf.jpg");
+    faces.push_back("res/textures/sor_sea/sea_up.jpg");
+    faces.push_back("res/textures/sor_sea/sea_dn.jpg");
+    faces.push_back("res/textures/sor_sea/sea_bk.jpg");
+    faces.push_back("res/textures/sor_sea/sea_ft.jpg");
+    GLuint cubemapTexture = loadCubemap(faces);
+
+    ShaderLoader::loadProgram(&skyBoxShader,"res/shaders/skyBoxVertexShader.vs","res/shaders/skyBoxFragmentShader.fs");
+
+    skyBox = meshLoader.getSkyBox();
+
+    skyBox->loadTexture(cubemapTexture);
+    skyBox->loadProgram(skyBoxShader);
+
+    duck = meshLoader.loadFromAszFile("res/models/duck.txt");
+    duck->loadProgram(lightShader);
+    GLuint duckTex;
+    loadTexture(&duckTex,"res/textures/ducktex.jpg");
+    duck->loadDiffuseMap(duckTex);
+    duck->loadSpecularMap(duckTex);
+    duck->setTranslation(0.f,0.0,0.f);
+    duck->setScale(0.002f);
+    meshVector.push_back(duck);
+
+     waterShader;
+     ShaderLoader::loadProgram(&waterShader,"res/shaders/waterReflectionVertexShader.vs","res/shaders/waterReflectionFragmentShader.fs");
+     Mesh* quad = meshLoader.getQuad();
+     quad->loadProgram(waterShader);
+     //quad->loadTexture(texture);
+     quad->setTranslation(0.f,0.f,0.0f);
+     //quad->setXRotation(-3.14/2);
+     quad->setRotation(3.14/2,0.0f,3.14/2);
+     //quad->setYRotation(-3.14/2);
+     quad->setScale(2.f);
      meshVector.push_back(quad);
 
-     Mesh* quad2 = meshLoader.getQuad();
+    /* Mesh* quad2 = meshLoader.getQuad();
      quad2->loadProgram(shaderProgram);
      quad2->loadTexture(texture);
      quad2->setTranslation(0.f,0.f,0.5f);
@@ -113,15 +146,7 @@ Renderer::Renderer() {
         meshVector.push_back(cubes);
     }*/
 
-    duck = meshLoader.loadFromAszFile("res/models/duck.txt");
-    duck->loadProgram(lightShader);
-    GLuint duckTex;
-    loadTexture(&duckTex,"res/textures/ducktex.jpg");
-    duck->loadDiffuseMap(duckTex);
-    duck->loadSpecularMap(duckTex);
-    duck->setTranslation(0.f,0.0,0.f);
-    duck->setScale(0.01f);
-    meshVector.push_back(duck);
+
 
     GLuint lampShader;
     ShaderLoader::loadProgram(&lampShader,"res/shaders/lampVertexShader.vs","res/shaders/lampFragmentShader.fs");
@@ -129,7 +154,7 @@ Renderer::Renderer() {
     Mesh* lamp = meshLoader.getCube();
     lamp->loadProgram(lampShader);
     lamp->setTranslation(lightPos);
-    lamp->setScale(0.2f);
+    lamp->setScale(0.05f);
     meshVector.push_back(lamp);
 }
 
@@ -138,7 +163,8 @@ void Renderer::render() {
     while(!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
+        glEnable (GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -147,14 +173,23 @@ void Renderer::render() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
-        glm::vec3 duckTranslation = vec3(duckPosition.x,0.0,duckPosition.y);
+        glm::vec3 duckTranslation = vec3(duckPosition.x,-0.04,duckPosition.y);
         duck->setTranslation(duckTranslation);
+
+        glUseProgram(waterShader);
+        GLint viewPosLoc = glGetUniformLocation(waterShader, "viewPos");
+        glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
+        //FIRST DRAW SKYBOX
+        //skyBox->setScale(5.f);
+
+
+
 
         glUseProgram(lightShader);
         GLint objectColorLoc = glGetUniformLocation(lightShader, "objectColor");
         GLint lightColorLoc  = glGetUniformLocation(lightShader, "lightColor");
         GLint lightPosLoc = glGetUniformLocation(lightShader, "lightPos");
-        GLint viewPosLoc = glGetUniformLocation(lightShader, "viewPos");
+        viewPosLoc = glGetUniformLocation(lightShader, "viewPos");
         glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
         glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
@@ -167,7 +202,7 @@ void Renderer::render() {
 
         /*glUniform3f(matAmbientLoc,  1.0f, 0.5f, 0.31f);
         glUniform3f(matDiffuseLoc,  1.0f, 0.5f, 0.31f);*/
-        glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
+        glUniform3f(matSpecularLoc, 0.9f, 0.9f, 0.9f);
         glUniform1f(matShineLoc,    32.0f);
 
         GLint lightAmbientLoc  = glGetUniformLocation(lightShader, "light.ambient");
@@ -199,6 +234,7 @@ void Renderer::render() {
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
         do_movement();
         camera.updateCameraView();
+        skyBox->renderAsSkyBox();
         for(int i=0;i<meshVector.size();i++){meshVector[i]->render();}
 
         glfwSwapBuffers(window);
@@ -289,4 +325,32 @@ void Renderer::do_movement() {
         camera.cameraPos -= glm::normalize(glm::cross(camera.cameraFront, camera.cameraUp)) * cameraSpeed;
     if(keys[GLFW_KEY_D])
         camera.cameraPos += glm::normalize(glm::cross(camera.cameraFront, camera.cameraUp)) * cameraSpeed;
+}
+
+GLuint Renderer::loadCubemap(vector<const GLchar*> faces)
+{
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glActiveTexture(GL_TEXTURE0);
+
+    int width,height;
+    unsigned char* image;
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    for(GLuint i = 0; i < faces.size(); i++)
+    {
+        image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+                GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
+        );
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+    return textureID;
 }
