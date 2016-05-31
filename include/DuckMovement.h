@@ -18,12 +18,16 @@ public:
     DuckMovement();
     vec2 getCoords(float frameDT);
     vec2 getLastGeneratedCords();
+    vec2 getMovementDirection();
 private:
     vector<vec2> controlPoitns;
     vec2 lastGeneratedCord;
+    vec2 movementDirection;
     float currentTime;
     float lapTime;
     vector<float> knotVector;
+    float lastGenX = 0.f;
+    float lastGenY = 0.f;
 
     void genRandControlPoints(int numOfControlPoints);
     vec2 calculateNewCord(const vector<float>& knotVector, float t, int n);

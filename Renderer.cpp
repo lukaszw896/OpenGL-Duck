@@ -174,7 +174,12 @@ void Renderer::render() {
         lastFrame = currentFrame;
         glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
         glm::vec3 duckTranslation = vec3(duckPosition.x,-0.04,duckPosition.y);
+
         duck->setTranslation(duckTranslation);
+        glm::vec2 md =duckMovement.getMovementDirection();
+        //CALCULATE ROTATION
+        float angle = acos(md.x/sqrt(pow(md.x,2)+pow(md.y,2)));
+        duck->setRotation(0.0,angle+3.14,0.0);
 
         glUseProgram(waterShader);
         GLint viewPosLoc = glGetUniformLocation(waterShader, "viewPos");

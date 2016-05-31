@@ -34,7 +34,12 @@ vec2 DuckMovement::getCoords(float frameDT) {
         currentTime -= LAP_TIME;
         genRandControlPoints(NUM_OF_CON_POINTS);
     }
-    return calculateNewCord(knotVector,(currentTime/LAP_TIME),3);
+    vec2 currentCords = calculateNewCord(knotVector,(currentTime/LAP_TIME),3);
+    vec2 nextCords = calculateNewCord(knotVector,((currentTime+frameDT)/LAP_TIME),3);
+    movementDirection = normalize(nextCords - lastGeneratedCord);
+    lastGeneratedCord = currentCords;
+
+    return currentCords;
 }
 
 void DuckMovement::genRandControlPoints(int numOfControlPoints) {
@@ -42,8 +47,25 @@ void DuckMovement::genRandControlPoints(int numOfControlPoints) {
     controlPoitns.push_back(vec2(0,0));
     for(int i=0;i<numOfControlPoints;i++)
     {
-        float xCord = getRandomNumber();
-        float yCord = getRandomNumber();
+        float xCord,yCord;
+        bool findNewX = true;
+        while(findNewX)
+        {
+            float tmpX = getRandomNumber();
+            if(abs(tmpX-lastGenX)<0.2f){
+                findNewX = false;
+                xCord = tmpX;
+            }
+        }
+        bool findNewY = true;
+        while(findNewY)
+        {
+            float tmpY = getRandomNumber();
+            if(abs(tmpY-lastGenY)<0.5f){
+                findNewY = false;
+                yCord = tmpY;
+            }
+        }
         controlPoitns.push_back(vec2(xCord,yCord));
     }
     controlPoitns.push_back(vec2(0,0));
@@ -94,4 +116,8 @@ float DuckMovement::bSplineRecurrsion(float t, int n, int i, const vector<float>
     rightRecursion *= bSplineRecurrsion(t, n-1, i+1, knotVector);
 
     return leftRecursion + rightRecursion;
+}
+
+vec2 DuckMovement::getMovementDirection() {
+    return movementDirection;
 }

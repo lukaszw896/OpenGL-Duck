@@ -20,10 +20,12 @@ void Mesh::render(){
     glm::mat4 projection;
     projection = glm::perspective(camera.fov, 800.f / 480.f, 0.1f, 100.0f);
     glm::mat4 model;
+
+    model = glm::translate(model, glm::vec3(xTranslation,yTranslation,zTranslation));
     model = glm::rotate(model, xRotation, glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, yRotation, glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, zRotation, glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::translate(model, glm::vec3(xTranslation,yTranslation,zTranslation));
+
     model = glm::scale(model,glm::vec3(scale));
 
     // Note that we're translating the scene in the reverse direction of where we want to move
