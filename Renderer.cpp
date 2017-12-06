@@ -16,7 +16,7 @@ Renderer::Renderer() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+    window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -41,7 +41,7 @@ Renderer::Renderer() {
     glfwSetCursorPosCallback(window, &mouse_callback);
     glfwSetScrollCallback(window, &scroll_callback);
     //init objects
-     lightPos =  glm::vec3(1.05f, 0.4f, -0.0f);
+     lightPos =  glm::vec3(20.5f, 8.0f, -0.0f);
 
     MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
     duckMovement = DuckMovement();
@@ -71,6 +71,7 @@ Renderer::Renderer() {
 
     skyBox->loadTexture(cubemapTexture);
     skyBox->loadProgram(skyBoxShader);
+    skyBox->setScale(10.0f);
 
     duck = meshLoader.loadFromAszFile("res/models/duck.txt");
     duck->loadProgram(lightShader);
@@ -91,7 +92,7 @@ Renderer::Renderer() {
      //quad->setXRotation(-3.14/2);
      quad->setRotation(3.14/2,0.0f,3.14/2);
      //quad->setYRotation(-3.14/2);
-     quad->setScale(2.f);
+     quad->setScale(40.f);
      meshVector.push_back(quad);
 
     /* Mesh* quad2 = meshLoader.getQuad();
@@ -154,7 +155,7 @@ Renderer::Renderer() {
     Mesh* lamp = meshLoader.getCube();
     lamp->loadProgram(lampShader);
     lamp->setTranslation(lightPos);
-    lamp->setScale(0.05f);
+    lamp->setScale(0.5f);
     meshVector.push_back(lamp);
 }
 

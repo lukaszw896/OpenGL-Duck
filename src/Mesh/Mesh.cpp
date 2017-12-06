@@ -18,7 +18,7 @@ void Mesh::render(){
 
     // Create transformations
     glm::mat4 projection;
-    projection = glm::perspective(camera.fov, 800.f / 480.f, 0.1f, 100.0f);
+    projection = glm::perspective(camera.fov, float(1920)/float(1080), 0.1f, 100.0f);
     glm::mat4 model;
 
     model = glm::translate(model, glm::vec3(xTranslation,yTranslation,zTranslation));
@@ -37,7 +37,6 @@ void Mesh::render(){
      glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view));
      GLint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
      glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES,0,this->numOfVertices);
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -72,7 +71,15 @@ void Mesh::renderAsSkyBox() {
     glUseProgram(shaderProgram);
     // Create transformations
     glm::mat4 projection;
-    projection = glm::perspective(camera.fov, 800.f / 480.f, 0.1f, 100.0f);
+    projection = glm::perspective(camera.fov, float(1920)/float(1080), 0.1f, 100.0f);
+    glm::mat4 model;
+    model = glm::scale(model,glm::vec3(20.0f));
+
+    // Note that we're translating the scene in the reverse direction of where we want to move
+
+    // Get matrix's uniform location and set matrix
+    GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view));
     GLint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
