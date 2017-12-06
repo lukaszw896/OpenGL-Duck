@@ -8,10 +8,10 @@
 #include <string>
 
 MeshLoader::MeshLoader() {
-
     initQuadBuffers();
     initCubeBuffers();
     initSkyBoxBuffers();
+    duckVAOC = MeshLoader::loadFromAszFile("res/models/duck.txt");
 }
 
 
@@ -220,8 +220,9 @@ Mesh* MeshLoader::getSkyBox() {
     return mesh;
 }
 
-Mesh* MeshLoader::loadFromAszFile(string path)
+VAOC MeshLoader::loadFromAszFile(string path)
 {
+    VAOC duckVertices;
     GLfloat* vertices = loadVerticesFromfile(path);
     //why do I have to do this?>>????
     GLfloat vertices2[(int)vertices[0]];
@@ -254,9 +255,18 @@ Mesh* MeshLoader::loadFromAszFile(string path)
     glEnableVertexAttribArray(2);
     //4. Unbind the VAO
     glBindVertexArray(0);
-    Mesh* mesh = new Mesh(VAO);
+    duckVertices.VAO = VAO;
+    duckVertices.vertexCount = vertices[0];
+    return duckVertices;
+    /*Mesh* mesh = new Mesh(VAO);
     mesh->numOfVertices =  vertices[0];
-    return mesh;
+    return mesh;*/
+}
+
+Mesh* MeshLoader::getDuck() {
+    Mesh* mesh = new Mesh(this->duckVAOC.VAO);
+     mesh->numOfVertices =  this->duckVAOC.vertexCount;
+     return mesh;
 }
 
 GLfloat* MeshLoader::loadVerticesFromfile(string path) {

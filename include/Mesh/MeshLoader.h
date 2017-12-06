@@ -13,6 +13,12 @@
 
 using  namespace std;
 
+struct VAOC
+{
+    GLuint VAO;
+    int vertexCount;
+};
+
 class MeshLoader {
 public:
     static MeshLoader& getMeshLoaderInstance()
@@ -23,7 +29,8 @@ public:
     Mesh* getQuad();
     Mesh* getCube();
     Mesh* getSkyBox();
-    Mesh* loadFromAszFile(string path);
+    Mesh* getDuck();
+    VAOC loadFromAszFile(string path);
 
 private:
     void initQuadBuffers();
@@ -35,6 +42,7 @@ private:
     GLuint quadVAO;
     GLuint cubeVAO;
     GLuint skyBoxVAO;
+    VAOC duckVAOC;
 
     std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
         std::stringstream ss(s);

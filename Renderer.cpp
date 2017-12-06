@@ -80,7 +80,7 @@ Renderer::Renderer() {
     skyBox->loadProgram(skyBoxShader);
     skyBox->setScale(10.0f);
 
-    duck = meshLoader.loadFromAszFile("res/models/duck.txt");
+    duck = meshLoader.getDuck();
     duck->loadProgram(lightShader);
     GLuint duckTex;
     loadTexture(&duckTex,"res/textures/ducktex.jpg");
@@ -102,33 +102,6 @@ Renderer::Renderer() {
      quad->setScale(40.f);
      meshVector.push_back(quad);
 
-    /* Mesh* quad2 = meshLoader.getQuad();
-     quad2->loadProgram(shaderProgram);
-     quad2->loadTexture(texture);
-     quad2->setTranslation(0.f,0.f,0.5f);
-     quad2->setXRotation(3.14);
-     meshVector.push_back(quad2);
-
-     Mesh* quad3 = meshLoader.getQuad();
-     quad3->loadProgram(shaderProgram);
-     quad3->loadTexture(texture);
-     quad3->setTranslation(0.5f,0.f,0.f);
-     quad3->setYRotation(3.14/2);
-     meshVector.push_back(quad3);
-
-     Mesh* quad4 = meshLoader.getQuad();
-     quad4->loadProgram(shaderProgram);
-     quad4->loadTexture(texture);
-     quad4->setTranslation(-0.5f,0.f,0.f);
-     quad4->setYRotation(-3.14/2);
-     meshVector.push_back(quad4);
-
-     Mesh* cube = meshLoader.getCube();
-     cube->loadProgram(shaderProgram);
-     cube->loadTexture(texture);
-     cube->setTranslation(4.f,0,0);
-     meshVector.push_back(cube);*/
-
     glm::vec3 cubePositions[] = {
             glm::vec3( 0.0f,  0.0f,  0.0f),
             glm::vec3( 2.0f,  5.0f, -15.0f),
@@ -142,7 +115,7 @@ Renderer::Renderer() {
             glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-   /* Mesh* cubes;
+    Mesh* cubes;
     for(int i=0;i<10;i++)
     {
         cubes = meshLoader.getCube();
@@ -152,8 +125,7 @@ Renderer::Renderer() {
         cubes->loadSpecularMap(specularTexture);
         cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
         meshVector.push_back(cubes);
-    }*/
-
+    }
 
 
     GLuint lampShader;
