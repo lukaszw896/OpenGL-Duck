@@ -116,9 +116,12 @@ void Mesh::setTranslation(GLfloat xTranslation, GLfloat yTranslation, GLfloat zT
     this->zTranslation = zTranslation;
 }
 
-void Mesh::setTranslation(glm::vec3 vec)
-{
-    this->setTranslation(vec.x,vec.y,vec.z);
+void Mesh::setTranslation(glm::vec3 vec) {
+    this->setTranslation(vec.x, vec.y, vec.z);
+}
+
+void Mesh::setTranslationWithRespectToOrigin(glm::vec3 vec) {
+    this->setTranslation(this->xOrigin + vec.x, this->yOrigin + vec.y, this->zOrigin + vec.z);
 }
 
 void Mesh::setRotation(GLfloat rotateX, GLfloat rotateY, GLfloat rotateZ) {
@@ -141,4 +144,10 @@ void Mesh::setZRotation(GLfloat zRotation) {
 
 void Mesh::setScale(GLfloat scale) {
     this->scale = scale;
+}
+
+void Mesh::setOrigin(glm::vec3 vec) {
+    this->xOrigin = vec[0];
+    this->yOrigin = vec[1];
+    this->zOrigin = vec[2];
 }

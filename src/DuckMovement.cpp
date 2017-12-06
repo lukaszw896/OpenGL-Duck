@@ -52,7 +52,7 @@ void DuckMovement::genRandControlPoints(int numOfControlPoints) {
         while(findNewX)
         {
             float tmpX = getRandomNumber();
-            if(abs(tmpX-lastGenX)<0.2f){
+            if(abs(tmpX-lastGenX)<10.0f){
                 findNewX = false;
                 xCord = tmpX;
             }
@@ -61,7 +61,7 @@ void DuckMovement::genRandControlPoints(int numOfControlPoints) {
         while(findNewY)
         {
             float tmpY = getRandomNumber();
-            if(abs(tmpY-lastGenY)<0.5f){
+            if(abs(tmpY-lastGenY)<10.0f){
                 findNewY = false;
                 yCord = tmpY;
             }

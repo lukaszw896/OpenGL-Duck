@@ -44,6 +44,7 @@ private:
     GLuint cubeTexture;
 
     Mesh* duck;
+    Mesh* duck2;
     Mesh* skyBox;
     DuckMovement duckMovement;
 

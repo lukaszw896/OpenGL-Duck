@@ -17,26 +17,24 @@ Renderer::Renderer() {
     //glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_SAMPLES, 4);
     auto monitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    const GLFWvidmode *mode = glfwGetVideoMode(monitor);
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-    window = glfwCreateWindow(1280, 720, "My Title", monitor, NULL);
-    //window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
-    if (window == nullptr)
-    {
+    //window = glfwCreateWindow(2560, 1440, "My Title", monitor, NULL);
+    window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
+    if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        return ;
+        return;
     }
     glfwMakeContextCurrent(window);
 
     glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK)
-    {
+    if (glewInit() != GLEW_OK) {
         std::cout << "Failed to initialize GLEW" << std::endl;
-        return ;
+        return;
     }
 
     int width, height;
@@ -48,22 +46,23 @@ Renderer::Renderer() {
     glfwSetCursorPosCallback(window, &mouse_callback);
     glfwSetScrollCallback(window, &scroll_callback);
     //init objects
-     lightPos =  glm::vec3(20.5f, 8.0f, -0.0f);
+    lightPos = glm::vec3(20.5f, 8.0f, -0.0f);
 
-    MeshLoader& meshLoader = MeshLoader::getMeshLoaderInstance();
+    MeshLoader &meshLoader = MeshLoader::getMeshLoaderInstance();
     duckMovement = DuckMovement();
 
     lightShader;
     //ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
     GLuint diffuseTexture;
-    loadTexture(&diffuseTexture,"res/textures/container2.png");
+    loadTexture(&diffuseTexture, "res/textures/container2.png");
     GLuint specularTexture;
-    loadTexture(&specularTexture,"res/textures/container2_specular.png");
-    ShaderLoader::loadProgram(&lightShader,"res/shaders/standardVertexShader.vs","res/shaders/lightColorFragmentShader.fs");
+    loadTexture(&specularTexture, "res/textures/container2_specular.png");
+    ShaderLoader::loadProgram(&lightShader, "res/shaders/standardVertexShader.vs",
+                              "res/shaders/lightColorFragmentShader.fs");
 
     //Cube map
 
-    vector<const GLchar*> faces;
+    vector<const GLchar *> faces;
     faces.push_back("res/textures/sor_sea/sea_rt.jpg");
     faces.push_back("res/textures/sor_sea/sea_lf.jpg");
     faces.push_back("res/textures/sor_sea/sea_up.jpg");
@@ -72,7 +71,8 @@ Renderer::Renderer() {
     faces.push_back("res/textures/sor_sea/sea_ft.jpg");
     GLuint cubemapTexture = loadCubemap(faces);
 
-    ShaderLoader::loadProgram(&skyBoxShader,"res/shaders/skyBoxVertexShader.vs","res/shaders/skyBoxFragmentShader.fs");
+    ShaderLoader::loadProgram(&skyBoxShader, "res/shaders/skyBoxVertexShader.vs",
+                              "res/shaders/skyBoxFragmentShader.fs");
 
     skyBox = meshLoader.getSkyBox();
 
@@ -80,58 +80,55 @@ Renderer::Renderer() {
     skyBox->loadProgram(skyBoxShader);
     skyBox->setScale(10.0f);
 
-    duck = meshLoader.getDuck();
-    duck->loadProgram(lightShader);
     GLuint duckTex;
-    loadTexture(&duckTex,"res/textures/ducktex.jpg");
-    duck->loadDiffuseMap(duckTex);
-    duck->loadSpecularMap(duckTex);
-    duck->setTranslation(0.f,0.0,0.f);
-    duck->setScale(0.002f);
+    loadTexture(&duckTex, "res/textures/ducktex.jpg");
+    duck = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{5.0f, 0.0f, 7.0f}, 0.002);
     meshVector.push_back(duck);
-
-     waterShader;
-     ShaderLoader::loadProgram(&waterShader,"res/shaders/waterReflectionVertexShader.vs","res/shaders/waterReflectionFragmentShader.fs");
-     Mesh* quad = meshLoader.getQuad();
-     quad->loadProgram(waterShader);
-     //quad->loadTexture(texture);
-     quad->setTranslation(0.f,0.f,0.0f);
-     //quad->setXRotation(-3.14/2);
-     quad->setRotation(3.14/2,0.0f,3.14/2);
-     //quad->setYRotation(-3.14/2);
-     quad->setScale(40.f);
-     meshVector.push_back(quad);
+    duck2 = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{-5.0f, 0.0f, -12.0f}, 0.002);
+    meshVector.push_back(duck2);
+    waterShader;
+    ShaderLoader::loadProgram(&waterShader, "res/shaders/waterReflectionVertexShader.vs",
+                              "res/shaders/waterReflectionFragmentShader.fs");
+    Mesh *quad = meshLoader.getQuad();
+    quad->loadProgram(waterShader);
+    //quad->loadTexture(texture);
+    quad->setTranslation(0.f, 0.f, 0.0f);
+    //quad->setXRotation(-3.14/2);
+    quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
+    //quad->setYRotation(-3.14/2);
+    quad->setScale(40.f);
+    meshVector.push_back(quad);
 
     glm::vec3 cubePositions[] = {
-            glm::vec3( 0.0f,  0.0f,  0.0f),
-            glm::vec3( 2.0f,  5.0f, -15.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(2.0f, 5.0f, -15.0f),
             glm::vec3(-1.5f, -2.2f, -2.5f),
             glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3( 2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f,  3.0f, -7.5f),
-            glm::vec3( 1.3f, -2.0f, -2.5f),
-            glm::vec3( 1.5f,  2.0f, -2.5f),
-            glm::vec3( 1.5f,  0.2f, -1.5f),
-            glm::vec3(-1.3f,  1.0f, -1.5f)
+            glm::vec3(2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f, 3.0f, -7.5f),
+            glm::vec3(1.3f, -2.0f, -2.5f),
+            glm::vec3(1.5f, 2.0f, -2.5f),
+            glm::vec3(1.5f, 0.2f, -1.5f),
+            glm::vec3(-1.3f, 1.0f, -1.5f)
     };
 
-    Mesh* cubes;
+    /*Mesh* cubes;
     for(int i=0;i<10;i++)
     {
         cubes = meshLoader.getCube();
-        cubes->loadProgram(lightShader);
+        cubes->loadProgram(lightShader);a
        // cubes->loadTexture(cubeTexture);
         cubes->loadDiffuseMap(diffuseTexture);
         cubes->loadSpecularMap(specularTexture);
         cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
         meshVector.push_back(cubes);
-    }
+    }*/
 
 
     GLuint lampShader;
-    ShaderLoader::loadProgram(&lampShader,"res/shaders/lampVertexShader.vs","res/shaders/lampFragmentShader.fs");
+    ShaderLoader::loadProgram(&lampShader, "res/shaders/lampVertexShader.vs", "res/shaders/lampFragmentShader.fs");
 
-    Mesh* lamp = meshLoader.getCube();
+    Mesh *lamp = meshLoader.getCube();
     lamp->loadProgram(lampShader);
     lamp->setTranslation(lightPos);
     lamp->setScale(0.5f);
@@ -154,20 +151,18 @@ void Renderer::render() {
         lastFrame = currentFrame;
         glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
         glm::vec3 duckTranslation = vec3(duckPosition.x,-0.04,duckPosition.y);
-
-        duck->setTranslation(duckTranslation);
-        glm::vec2 md =duckMovement.getMovementDirection();
+        duck->setTranslationWithRespectToOrigin(duckTranslation);
+        duck2->setTranslationWithRespectToOrigin(duckTranslation);
+        glm::vec2 md = duckMovement.getMovementDirection();
         //CALCULATE ROTATION
         float angle = acos(md.x/sqrt(pow(md.x,2)+pow(md.y,2)));
         duck->setRotation(0.0,angle+3.14,0.0);
-
+        duck2->setRotation(0.0,angle+3.14,0.0);
         glUseProgram(waterShader);
         GLint viewPosLoc = glGetUniformLocation(waterShader, "viewPos");
         glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
         //FIRST DRAW SKYBOX
         //skyBox->setScale(5.f);
-
-
 
 
         glUseProgram(lightShader);

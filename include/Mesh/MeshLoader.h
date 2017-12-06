@@ -9,6 +9,7 @@
 #include <c++/vector>
 #include <c++/sstream>
 #include "Mesh.h"
+//#include "../../external/glfw-3.1.2/deps/linmath.h"
 
 
 using  namespace std;
@@ -29,7 +30,7 @@ public:
     Mesh* getQuad();
     Mesh* getCube();
     Mesh* getSkyBox();
-    Mesh* getDuck();
+    Mesh* getDuck(GLuint texture, GLuint diffuseMap, GLuint specularMap, GLuint shader, glm::vec3 translation, GLfloat scale);
     VAOC loadFromAszFile(string path);
 
 private:

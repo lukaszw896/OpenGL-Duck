@@ -220,53 +220,48 @@ Mesh* MeshLoader::getSkyBox() {
     return mesh;
 }
 
-VAOC MeshLoader::loadFromAszFile(string path)
-{
+VAOC MeshLoader::loadFromAszFile(string path) {
     VAOC duckVertices;
-    GLfloat* vertices = loadVerticesFromfile(path);
-    //why do I have to do this?>>????
-    GLfloat vertices2[(int)vertices[0]];
-    for(int i=0;i<vertices[0]+1;i++)
-    {
-        vertices2[i] = vertices[i+1];
+    GLfloat *vertices = loadVerticesFromfile(path);
+    GLfloat vertices2[(int) vertices[0]];
+    for (int i = 0; i < vertices[0] + 1; i++) {
+        vertices2[i] = vertices[i + 1];
     }
     GLuint VAO;
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
-
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-
-    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadindices), quadindices, GL_STATIC_DRAW);*/
-
     // 3. Then set our vertex attributes pointers
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *) 0);
     glEnableVertexAttribArray(0);
     // Normal value
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *) (3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
     //Texture attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *) (6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
     //4. Unbind the VAO
     glBindVertexArray(0);
     duckVertices.VAO = VAO;
     duckVertices.vertexCount = vertices[0];
     return duckVertices;
-    /*Mesh* mesh = new Mesh(VAO);
-    mesh->numOfVertices =  vertices[0];
-    return mesh;*/
 }
 
-Mesh* MeshLoader::getDuck() {
-    Mesh* mesh = new Mesh(this->duckVAOC.VAO);
-     mesh->numOfVertices =  this->duckVAOC.vertexCount;
-     return mesh;
+Mesh *MeshLoader::getDuck(GLuint texture, GLuint diffuseMap, GLuint specularMap, GLuint shader, glm::vec3 translation,
+                          GLfloat scale) {
+    Mesh *mesh = new Mesh(this->duckVAOC.VAO);
+    mesh->numOfVertices = this->duckVAOC.vertexCount;
+    mesh->loadProgram(shader);
+    mesh->loadDiffuseMap(diffuseMap);
+    mesh->loadSpecularMap(specularMap);
+    mesh->setTranslation(translation[0], translation[1], translation[2]);
+    mesh->setScale(scale);
+    mesh->setOrigin(translation);
+    return mesh;
 }
 
 GLfloat* MeshLoader::loadVerticesFromfile(string path) {
