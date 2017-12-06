@@ -10,6 +10,7 @@ Renderer& Renderer::getInstance(){
 }
 
 Renderer::Renderer() {
+    this->isMSAAEnabled = true;
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -22,8 +23,8 @@ Renderer::Renderer() {
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-    //window = glfwCreateWindow(2560, 1440, "My Title", monitor, NULL);
-    window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
+    window = glfwCreateWindow(1280, 720, "My Title", monitor, NULL);
+    //window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -45,6 +46,9 @@ Renderer::Renderer() {
     glfwSetKeyCallback(window, &key_callback);
     glfwSetCursorPosCallback(window, &mouse_callback);
     glfwSetScrollCallback(window, &scroll_callback);
+
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_FOG);                   // Enables GL_FOG
     //init objects
     lightPos = glm::vec3(20.5f, 8.0f, -0.0f);
 
@@ -145,7 +149,7 @@ void Renderer::render() {
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_MULTISAMPLE);
+
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -216,7 +220,6 @@ void Renderer::render() {
         camera.updateCameraView();
         skyBox->renderAsSkyBox();
         for(int i=0;i<meshVector.size();i++){meshVector[i]->render();}
-
         glfwSwapBuffers(window);
     }
     /* glDeleteVertexArrays(1, &VAO);
@@ -240,6 +243,19 @@ void Renderer::my_key_callback(GLFWwindow *window, int key, int scancode, int ac
     // closing the application
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+    else if(key == GLFW_KEY_1&& action == GLFW_PRESS){
+        if(this->isMSAAEnabled){
+            this->isMSAAEnabled = false;
+            glDisable(GL_MULTISAMPLE);
+            printf("MSAA DISABLED \n");
+        }
+        else{
+            this->isMSAAEnabled = true;
+            glEnable(GL_MULTISAMPLE);
+            printf("MSAA ENABLED \n");
+        }
+    }
+
     if(action == GLFW_PRESS)
         keys[key] = true;
     else if(action == GLFW_RELEASE)

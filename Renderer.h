@@ -30,6 +30,7 @@ public:
 private:
     Renderer();
     GLFWwindow* window;
+    bool isMSAAEnabled;
     Camera& camera = Camera::getInstance();
     bool keys[1024];
     GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
