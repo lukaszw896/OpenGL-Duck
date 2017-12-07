@@ -31,18 +31,21 @@ public:
     Mesh* getCube();
     Mesh* getSkyBox();
     Mesh* getDuck(GLuint texture, GLuint diffuseMap, GLuint specularMap, GLuint shader, glm::vec3 translation, GLfloat scale);
+    Mesh* getSphere();
     VAOC loadFromAszFile(string path);
 
 private:
     void initQuadBuffers();
     void initCubeBuffers();
     void initSkyBoxBuffers();
+    void initSphereBuffers(GLfloat*, int numOfVertices);
     MeshLoader();
     GLfloat* loadVerticesFromfile(string path);
     //Quad
     GLuint quadVAO;
     GLuint cubeVAO;
     GLuint skyBoxVAO;
+    VAOC sphereVAOC;
     VAOC duckVAOC;
 
     std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {

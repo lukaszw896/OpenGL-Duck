@@ -12,6 +12,8 @@ MeshLoader::MeshLoader() {
     initCubeBuffers();
     initSkyBoxBuffers();
     duckVAOC = MeshLoader::loadFromAszFile("res/models/duck.txt");
+    SolidSphere sphere(1, 12, 24);
+    initSphereBuffers(sphere.GetVertices(),sphere.numOfVertices);
 }
 
 
@@ -202,6 +204,36 @@ void MeshLoader::initSkyBoxBuffers() {
     glBindVertexArray(0);
 }
 
+void MeshLoader::initSphereBuffers(GLfloat * vertices, int numOfVertices) {
+    GLuint sphereVBO;
+    GLuint VAO;
+    glGenBuffers(1, &sphereVBO);
+    glGenVertexArrays(1, &VAO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadindices), quadindices, GL_STATIC_DRAW);*/
+
+    // 3. Then set our vertex attributes pointers
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    // Normal value
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    /*//Texture attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);*/
+    //4. Unbind the VAO
+    glBindVertexArray(0);
+    this->sphereVAOC.VAO = VAO;
+    this->sphereVAOC.vertexCount = numOfVertices;
+}
+
 Mesh* MeshLoader::getQuad() {
     Mesh* mesh = new Mesh(quadVAO);
     mesh->numOfVertices = 6;
@@ -261,6 +293,12 @@ Mesh *MeshLoader::getDuck(GLuint texture, GLuint diffuseMap, GLuint specularMap,
     mesh->setTranslation(translation[0], translation[1], translation[2]);
     mesh->setScale(scale);
     mesh->setOrigin(translation);
+    return mesh;
+}
+
+Mesh *MeshLoader::getSphere() {
+    Mesh* mesh = new Mesh(sphereVAOC.VAO);
+    mesh->numOfVertices = sphereVAOC.vertexCount;
     return mesh;
 }
 

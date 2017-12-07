@@ -47,6 +47,7 @@ private:
     Mesh* duck;
     Mesh* duck2;
     Mesh* skyBox;
+    Mesh* mySphere;
     DuckMovement duckMovement;
 
 

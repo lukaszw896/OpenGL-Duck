@@ -17,6 +17,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 
 class Mesh {
@@ -78,6 +79,39 @@ private:
     GLfloat scale = 1.f;
 
 
+};
+
+class SolidSphere
+{
+private:
+    std::vector<GLfloat> vertices;
+
+public:
+    int numOfVertices;
+    SolidSphere(float radius, unsigned int rings, unsigned int sectors)
+    {
+        float const R = 1./(float)(rings-1);
+        float const S = 1./(float)(sectors-1);
+        int r, s;
+        numOfVertices = rings * sectors;
+        vertices.resize(rings * sectors * 3 *2);
+
+        std::vector<GLfloat>::iterator v = vertices.begin();
+        for(r = 0; r < rings; r++) for(s = 0; s < sectors; s++) {
+                float const y = sin( -M_PI_2 + M_PI * r * R );
+                float const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
+                float const z = sin(2*M_PI * s * S) * sin( M_PI * r * R );
+                *v++ = x * radius;
+                *v++ = y * radius;
+                *v++ = z * radius;
+                *v++ = x;
+                *v++ = y;
+                *v++ = z;
+            }
+    }
+    GLfloat* GetVertices(){
+        return &vertices[0];
+    }
 };
 
 

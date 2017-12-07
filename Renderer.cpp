@@ -23,7 +23,7 @@ Renderer::Renderer() {
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-    window = glfwCreateWindow(1280, 720, "My Title", monitor, NULL);
+    window = glfwCreateWindow(2560, 1440, "My Title", monitor, NULL);
     //window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -89,6 +89,14 @@ Renderer::Renderer() {
     duck = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{5.0f, 0.0f, 7.0f}, 0.002);
     meshVector.push_back(duck);
     duck2 = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{-5.0f, 0.0f, -12.0f}, 0.002);
+    mySphere = meshLoader.getSphere();
+    mySphere->loadProgram(lightShader);
+    mySphere->loadTexture(duckTex);
+    mySphere->loadDiffuseMap(duckTex);
+    mySphere->loadSpecularMap(duckTex);
+    //mySphere->setTranslation(-1.3f, 1.0f, -1.5f);
+    meshVector.push_back(mySphere);
+
     meshVector.push_back(duck2);
     waterShader;
     ShaderLoader::loadProgram(&waterShader, "res/shaders/waterReflectionVertexShader.vs",
@@ -103,30 +111,15 @@ Renderer::Renderer() {
     quad->setScale(40.f);
     meshVector.push_back(quad);
 
-    glm::vec3 cubePositions[] = {
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(2.0f, 5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3(2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f, 3.0f, -7.5f),
-            glm::vec3(1.3f, -2.0f, -2.5f),
-            glm::vec3(1.5f, 2.0f, -2.5f),
-            glm::vec3(1.5f, 0.2f, -1.5f),
-            glm::vec3(-1.3f, 1.0f, -1.5f)
-    };
+    Mesh *cubes;
 
-    /*Mesh* cubes;
-    for(int i=0;i<10;i++)
-    {
-        cubes = meshLoader.getCube();
-        cubes->loadProgram(lightShader);a
-       // cubes->loadTexture(cubeTexture);
-        cubes->loadDiffuseMap(diffuseTexture);
-        cubes->loadSpecularMap(specularTexture);
-        cubes->setTranslation(cubePositions[i].x,cubePositions[i].y,cubePositions[i].z);
-        meshVector.push_back(cubes);
-    }*/
+    cubes = meshLoader.getCube();
+    cubes->loadProgram(lightShader);
+    // cubes->loadTexture(cubeTexture);
+    cubes->loadDiffuseMap(diffuseTexture);
+    cubes->loadSpecularMap(specularTexture);
+    cubes->setTranslation(0.0f, 0.0f, 0.0f);
+    meshVector.push_back(cubes);
 
 
     GLuint lampShader;
@@ -219,6 +212,7 @@ void Renderer::render() {
         do_movement();
         camera.updateCameraView();
         skyBox->renderAsSkyBox();
+
         for(int i=0;i<meshVector.size();i++){meshVector[i]->render();}
         glfwSwapBuffers(window);
     }
@@ -301,6 +295,7 @@ void Renderer::loadTexture(GLuint *texture, const char *path) {
     // Set the texture wrapping/filtering options (on the currently bound texture object)
     float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
     // Load and generate the texture
     int w, h;
     unsigned char* image = SOIL_load_image(path, &w, &h, 0, SOIL_LOAD_RGB);
