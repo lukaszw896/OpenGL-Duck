@@ -37,6 +37,12 @@ void Mesh::render(){
      glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view));
      GLint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
      glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    GLint cameraup = glGetUniformLocation(shaderProgram, "cameraup");
+    glUniformMatrix4fv(cameraup, 1, GL_FALSE, glm::value_ptr(camera.cameraUp));
+    GLint camerafront = glGetUniformLocation(shaderProgram, "camerafront");
+    glUniformMatrix4fv(camerafront, 1, GL_FALSE, glm::value_ptr(camera.cameraFront));
+
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES,0,this->numOfVertices);
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

@@ -13,7 +13,18 @@ out vec2 TexCoords;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
+mat4 myModel =view * model;
+    // First colunm.
+    myModel[0][0] = 1.0;
+    myModel[0][1] = 0.0;
+    myModel[0][2] = 0.0;
+
+
+    // Thrid colunm.
+    myModel[2][0] = 0.0;
+    myModel[2][1] = 0.0;
+    myModel[2][2] = 1.0;
+    gl_Position = projection *  myModel * vec4(position, 1.0f);
     FragPos = vec3(model * vec4(position, 1.0f));
     //inverse is a costly operation
     Normal = mat3(transpose(inverse(model))) * normal;
