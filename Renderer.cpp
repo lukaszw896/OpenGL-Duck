@@ -89,6 +89,10 @@ Renderer::Renderer() {
     duck = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{5.0f, 0.0f, 7.0f}, 0.002);
     meshVector.push_back(duck);
     duck2 = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{-5.0f, 0.0f, -12.0f}, 0.002);
+
+
+    /*GLuint sphereProgram;
+    ShaderLoader::loadProgram()*/
     mySphere = meshLoader.getSphere();
     mySphere->loadProgram(lightShader);
     mySphere->loadTexture(duckTex);
@@ -118,6 +122,7 @@ Renderer::Renderer() {
     loadTexture(&fireTex, "res/textures/alphaFire.png");
     Mesh* bilboard = meshLoader.getQuad();
     bilboard->loadProgram(bilboardProgram);
+    bilboard->loadTexture(fireTex);
     bilboard->loadDiffuseMap(fireTex);
     bilboard->loadSpecularMap(fireTex);
     bilboard->setRotation(0.0f,-1.5f,0.0f);

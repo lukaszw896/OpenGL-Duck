@@ -11,6 +11,7 @@ Mesh::Mesh(GLuint vao) {
 void Mesh::render(){
     // Draw the triangle
     glUseProgram(shaderProgram);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
     glActiveTexture(GL_TEXTURE1);
