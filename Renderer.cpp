@@ -23,8 +23,8 @@ Renderer::Renderer() {
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-    window = glfwCreateWindow(2560, 1440, "My Title", monitor, NULL);
-    //window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
+    //window = glfwCreateWindow(2560, 1440, "My Title", monitor, NULL);
+    window = glfwCreateWindow(1920, 1080, "LearnOpenGL", nullptr, nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -108,11 +108,23 @@ Renderer::Renderer() {
     //quad->setXRotation(-3.14/2);
     quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
     //quad->setYRotation(-3.14/2);
-    quad->setScale(40.f);
+    quad->setScale(300.f);
     meshVector.push_back(quad);
 
-    Mesh *cubes;
+    GLuint bilboardProgram;
+    ShaderLoader::loadProgram(&bilboardProgram,"res/shaders/billboard.vs",
+                              "res/shaders/billboard.fs");
+    GLuint fireTex;
+    loadTexture(&fireTex, "res/textures/alphaFire.png");
+    Mesh* bilboard = meshLoader.getQuad();
+    bilboard->loadProgram(bilboardProgram);
+    bilboard->loadDiffuseMap(fireTex);
+    bilboard->loadSpecularMap(fireTex);
+    bilboard->setRotation(0.0f,-1.5f,0.0f);
+    bilboard->setTranslation(0.0f,2.0f,0.0f);
+    meshVector.push_back(bilboard);
 
+    Mesh *cubes;
     cubes = meshLoader.getCube();
     cubes->loadProgram(lightShader);
     // cubes->loadTexture(cubeTexture);
@@ -120,6 +132,7 @@ Renderer::Renderer() {
     cubes->loadSpecularMap(specularTexture);
     cubes->setTranslation(0.0f, 0.0f, 0.0f);
     meshVector.push_back(cubes);
+
 
 
     GLuint lampShader;

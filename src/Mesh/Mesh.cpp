@@ -71,9 +71,9 @@ void Mesh::renderAsSkyBox() {
     glUseProgram(shaderProgram);
     // Create transformations
     glm::mat4 projection;
-    projection = glm::perspective(camera.fov, float(1920)/float(1080), 0.1f, 100.0f);
+    projection = glm::perspective(camera.fov, float(1920)/float(1080), 0.1f, 1000.0f);
     glm::mat4 model;
-    model = glm::scale(model,glm::vec3(20.0f));
+    model = glm::scale(model,glm::vec3(500.0f));
 
     // Note that we're translating the scene in the reverse direction of where we want to move
 
