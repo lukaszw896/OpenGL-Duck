@@ -161,3 +161,13 @@ void Mesh::setOrigin(glm::vec3 vec) {
     this->yOrigin = vec[1];
     this->zOrigin = vec[2];
 }
+
+void Mesh::move(GLfloat xMovement, GLfloat yMovement, GLfloat zMovement){
+    this->xTranslation = xTranslation+xMovement;
+    this->yTranslation = yTranslation+yMovement;
+    this->zTranslation = zTranslation+zMovement;
+}
+
+void  Mesh::moveToOrigin(){
+    this->setTranslation(glm::vec3(xOrigin,yOrigin,zOrigin));
+}

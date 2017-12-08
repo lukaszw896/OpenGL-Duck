@@ -130,21 +130,22 @@ Renderer::Renderer() {
                               "res/shaders/billboard.fs");
   /* GLuint particleTex;
     loadTexture(&particleTex, "res/textures/particle.png");*/
-    for(int i=0;i<10;i++)
+    for(int i=0;i<100;i++)
     {
-        auto posX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        auto posY = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        auto posZ = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        auto xDirection = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.1f));
-        auto yDirection = 1.0f;
-        auto zDirection = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.1f));
-        auto xSpeed = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0f));
+        GLfloat posX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        GLfloat posY = 2.5f+ static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        GLfloat posZ = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
         Mesh* particle = meshLoader.getQuad();
         particle->loadProgram(particleProgram);
         particle->loadDiffuseMap(fireTex);
+        particle->xDirection = -0.1f +static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        particle->yDirection = 1.0f;
+        particle->zDirection = -0.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        particle->speed = 1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f));
         particle->meshType = particleBilboard;
-       particle->setScale(0.1f);
-        particle->setTranslation(0.0f+posX,4.0f+posY,0.0f+posZ);
+       particle->setScale(0.025f);
+        particle->setOrigin(vec3());
+        particle->setTranslation(posX,posY,posZ);
         particleVector.push_back(particle);
         meshVector.push_back(particle);
     }
@@ -172,6 +173,22 @@ Renderer::Renderer() {
     meshVector.push_back(lamp);
 }
 
+void Renderer::moveParticles(GLfloat dt) {
+    for(int i=0; i< particleVector.size();i++) {
+        auto speedXtime = particleVector[i]->speed * dt/50;
+        GLfloat xMovement = particleVector[i]->xDirection* speedXtime;
+        GLfloat yMovement = particleVector[i]->yDirection* speedXtime;
+        GLfloat zMovement = particleVector[i]->zDirection* speedXtime;
+        particleVector[i]->move(xMovement,yMovement,zMovement);
+        particleVector[i]->aproxDistance += particleVector[i]->yDirection* speedXtime;
+        if(particleVector[i]->aproxDistance > 2.0f)
+        {
+            particleVector[i]->aproxDistance = 0.0f;
+            particleVector[i]->moveToOrigin();
+        }
+    }
+}
+
 void Renderer::render() {
     //game loop
     while(!glfwWindowShouldClose(window))
@@ -186,6 +203,7 @@ void Renderer::render() {
 
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
+        moveParticles(deltaTime);
         lastFrame = currentFrame;
         glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
         glm::vec3 duckTranslation = vec3(duckPosition.x,-0.04,duckPosition.y);

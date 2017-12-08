@@ -26,6 +26,7 @@ class Renderer {
 public:
     static Renderer& getInstance();
     void render();
+    void moveParticles(GLfloat dt);
 
 private:
     Renderer();

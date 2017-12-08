@@ -27,6 +27,11 @@ class Mesh {
 
 public:
     MeshType meshType;
+    GLfloat xDirection = 0.0f;
+    GLfloat yDirection = 0.0f;
+    GLfloat zDirection = 0.0f;
+    GLfloat speed = 0.0f;
+    GLfloat aproxDistance = 0.0f;
     Mesh(GLuint VAO);
 
     void render();
@@ -59,6 +64,10 @@ public:
 
     void setOrigin(glm::vec3);
 
+    void move(GLfloat xMovement, GLfloat yMovement, GLfloat zMovement);
+
+    void moveToOrigin();
+
     GLint numOfVertices;
 private:
 
@@ -79,11 +88,8 @@ private:
     GLfloat yRotation = 0.0f;
     GLfloat zRotation = 0.0f;
 
-    GLfloat xDirection = 0.0f;
-    GLfloat yDirection = 0.0f;
-    GLfloat zDirection = 0.0f;
-    GLfloat speed = 0.0f;
     GLfloat scale = 1.f;
+
 
 
 };
