@@ -91,13 +91,11 @@ Renderer::Renderer() {
     duck2 = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{-5.0f, 0.0f, -12.0f}, 0.002);
 
 
-    /*GLuint sphereProgram;
-    ShaderLoader::loadProgram()*/
+    GLuint sphereProgram;
+    ShaderLoader::loadProgram(&sphereProgram,"res/shaders/standardVertexShader.vs",
+                              "res/shaders/color.fs");
     mySphere = meshLoader.getSphere();
-    mySphere->loadProgram(lightShader);
-    mySphere->loadTexture(duckTex);
-    mySphere->loadDiffuseMap(duckTex);
-    mySphere->loadSpecularMap(duckTex);
+    mySphere->loadProgram(sphereProgram);
     //mySphere->setTranslation(-1.3f, 1.0f, -1.5f);
     meshVector.push_back(mySphere);
 
@@ -122,12 +120,36 @@ Renderer::Renderer() {
     loadTexture(&fireTex, "res/textures/alphaFire.png");
     Mesh* bilboard = meshLoader.getQuad();
     bilboard->loadProgram(bilboardProgram);
-    bilboard->loadTexture(fireTex);
     bilboard->loadDiffuseMap(fireTex);
-    bilboard->loadSpecularMap(fireTex);
     bilboard->setRotation(0.0f,-1.5f,0.0f);
     bilboard->setTranslation(0.0f,2.0f,0.0f);
     meshVector.push_back(bilboard);
+
+    GLuint particleProgram;
+    ShaderLoader::loadProgram(&particleProgram,"res/shaders/billboard.vs",
+                              "res/shaders/billboard.fs");
+  /* GLuint particleTex;
+    loadTexture(&particleTex, "res/textures/particle.png");*/
+    for(int i=0;i<10;i++)
+    {
+        auto posX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        auto posY = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        auto posZ = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        auto xDirection = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.1f));
+        auto yDirection = 1.0f;
+        auto zDirection = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.1f));
+        auto xSpeed = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0f));
+        Mesh* particle = meshLoader.getQuad();
+        particle->loadProgram(particleProgram);
+        particle->loadDiffuseMap(fireTex);
+        particle->meshType = particleBilboard;
+       particle->setScale(0.1f);
+        particle->setTranslation(0.0f+posX,4.0f+posY,0.0f+posZ);
+        particleVector.push_back(particle);
+        meshVector.push_back(particle);
+    }
+
+
 
     Mesh *cubes;
     cubes = meshLoader.getCube();
@@ -156,7 +178,8 @@ void Renderer::render() {
     {
         glfwPollEvents();
         glEnable (GL_BLEND);
-        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -19,11 +19,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
-
+enum MeshType
+{
+    particleBilboard,
+};
 class Mesh {
 
-
 public:
+    MeshType meshType;
     Mesh(GLuint VAO);
 
     void render();
@@ -76,6 +79,10 @@ private:
     GLfloat yRotation = 0.0f;
     GLfloat zRotation = 0.0f;
 
+    GLfloat xDirection = 0.0f;
+    GLfloat yDirection = 0.0f;
+    GLfloat zDirection = 0.0f;
+    GLfloat speed = 0.0f;
     GLfloat scale = 1.f;
 
 
@@ -94,7 +101,7 @@ public:
         float const S = 1./(float)(sectors-1);
         int r, s;
         numOfVertices = rings * sectors;
-        vertices.resize(rings * sectors * 3 *2);
+        vertices.resize(rings * sectors * 3);
 
         std::vector<GLfloat>::iterator v = vertices.begin();
         for(r = 0; r < rings; r++) for(s = 0; s < sectors; s++) {
@@ -104,9 +111,7 @@ public:
                 *v++ = x * radius;
                 *v++ = y * radius;
                 *v++ = z * radius;
-                *v++ = x;
-                *v++ = y;
-                *v++ = z;
+
             }
     }
     GLfloat* GetVertices(){

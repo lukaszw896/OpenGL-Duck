@@ -38,9 +38,12 @@ void Mesh::render(){
      glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view));
      GLint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
      glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    GLint cameraup = glGetUniformLocation(shaderProgram, "cameraup");
-    glUniformMatrix4fv(cameraup, 1, GL_FALSE, glm::value_ptr(camera.cameraUp));
+    if(this->meshType == particleBilboard) {
+        GLint perpendicular = glGetUniformLocation(shaderProgram, "perpendicular");
+        glUniform1i(perpendicular, 1);
+        GLint scaleVS = glGetUniformLocation(shaderProgram, "scale");
+        glUniform1f(scaleVS, scale);
+    }
     GLint camerafront = glGetUniformLocation(shaderProgram, "camerafront");
     glUniformMatrix4fv(camerafront, 1, GL_FALSE, glm::value_ptr(camera.cameraFront));
 
