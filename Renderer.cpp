@@ -113,6 +113,15 @@ Renderer::Renderer() {
     quad->setScale(300.f);
     meshVector.push_back(quad);
 
+    Mesh *cubes;
+    cubes = meshLoader.getCube();
+    cubes->loadProgram(lightShader);
+    // cubes->loadTexture(cubeTexture);
+    cubes->loadDiffuseMap(diffuseTexture);
+    cubes->loadSpecularMap(specularTexture);
+    cubes->setTranslation(0.0f, 0.5f, 0.0f);
+    meshVector.push_back(cubes);
+
     GLuint bilboardProgram;
     ShaderLoader::loadProgram(&bilboardProgram,"res/shaders/billboard.vs",
                               "res/shaders/billboard.fs");
@@ -122,7 +131,7 @@ Renderer::Renderer() {
     bilboard->loadProgram(bilboardProgram);
     bilboard->loadDiffuseMap(fireTex);
     bilboard->setRotation(0.0f,-1.5f,0.0f);
-    bilboard->setTranslation(0.0f,2.0f,0.0f);
+    bilboard->setTranslation(0.0f,1.5f,0.0f);
     meshVector.push_back(bilboard);
 
     GLuint particleProgram;
@@ -130,10 +139,10 @@ Renderer::Renderer() {
                               "res/shaders/billboard.fs");
   /* GLuint particleTex;
     loadTexture(&particleTex, "res/textures/particle.png");*/
-    for(int i=0;i<100;i++)
+    for(int i=0;i<200;i++)
     {
         GLfloat posX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        GLfloat posY = 2.5f+ static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
+        GLfloat posY = 1.75f+ static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
         GLfloat posZ = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
         Mesh* particle = meshLoader.getQuad();
         particle->loadProgram(particleProgram);
@@ -144,22 +153,11 @@ Renderer::Renderer() {
         particle->speed = 1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f));
         particle->meshType = particleBilboard;
        particle->setScale(0.025f);
-        particle->setOrigin(vec3());
+        particle->setOrigin(vec3(posX,posY,posZ));
         particle->setTranslation(posX,posY,posZ);
         particleVector.push_back(particle);
         meshVector.push_back(particle);
     }
-
-
-
-    Mesh *cubes;
-    cubes = meshLoader.getCube();
-    cubes->loadProgram(lightShader);
-    // cubes->loadTexture(cubeTexture);
-    cubes->loadDiffuseMap(diffuseTexture);
-    cubes->loadSpecularMap(specularTexture);
-    cubes->setTranslation(0.0f, 0.0f, 0.0f);
-    meshVector.push_back(cubes);
 
 
 
@@ -175,13 +173,13 @@ Renderer::Renderer() {
 
 void Renderer::moveParticles(GLfloat dt) {
     for(int i=0; i< particleVector.size();i++) {
-        auto speedXtime = particleVector[i]->speed * dt/50;
+        auto speedXtime = particleVector[i]->speed * dt/40;
         GLfloat xMovement = particleVector[i]->xDirection* speedXtime;
         GLfloat yMovement = particleVector[i]->yDirection* speedXtime;
         GLfloat zMovement = particleVector[i]->zDirection* speedXtime;
         particleVector[i]->move(xMovement,yMovement,zMovement);
         particleVector[i]->aproxDistance += particleVector[i]->yDirection* speedXtime;
-        if(particleVector[i]->aproxDistance > 2.0f)
+        if(particleVector[i]->aproxDistance > 0.75f)
         {
             particleVector[i]->aproxDistance = 0.0f;
             particleVector[i]->moveToOrigin();
