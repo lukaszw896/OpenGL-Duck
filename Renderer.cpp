@@ -268,6 +268,7 @@ void Renderer::render() {
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
         do_movement();
         camera.updateCameraView();
+        skyBox->setTranslation(camera.cameraPos);
         skyBox->renderAsSkyBox();
 
         for(int i=0;i<meshVector.size();i++){meshVector[i]->render();}
