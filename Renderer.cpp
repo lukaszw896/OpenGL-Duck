@@ -73,14 +73,16 @@ Renderer::Renderer() {
     faces.push_back("res/textures/sor_sea/sea_dn.jpg");
     faces.push_back("res/textures/sor_sea/sea_bk.jpg");
     faces.push_back("res/textures/sor_sea/sea_ft.jpg");
-    GLuint cubemapTexture = loadCubemap(faces);
+     skyBoxTexture = loadCubemap(faces);
 
     ShaderLoader::loadProgram(&skyBoxShader, "res/shaders/skyBoxVertexShader.vs",
                               "res/shaders/skyBoxFragmentShader.fs");
 
+    ShaderLoader::loadProgram(&glassShader,"res/shaders/glass.vs",
+                              "res/shaders/glass.fs");
     skyBox = meshLoader.getSkyBox();
 
-    skyBox->loadTexture(cubemapTexture);
+    skyBox->loadTexture(skyBoxTexture);
     skyBox->loadProgram(skyBoxShader);
     skyBox->setScale(10.0f);
 
@@ -115,10 +117,11 @@ Renderer::Renderer() {
 
     Mesh *cubes;
     cubes = meshLoader.getCube();
-    cubes->loadProgram(lightShader);
+    cubes->loadProgram(glassShader);
+    cubes->loadTexture(skyBoxTexture);
     // cubes->loadTexture(cubeTexture);
-    cubes->loadDiffuseMap(diffuseTexture);
-    cubes->loadSpecularMap(specularTexture);
+   // cubes->loadDiffuseMap(diffuseTexture);
+   // cubes->loadSpecularMap(specularTexture);
     cubes->setTranslation(0.0f, 0.5f, 0.0f);
     meshVector.push_back(cubes);
 

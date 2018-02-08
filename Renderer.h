@@ -43,7 +43,8 @@ private:
     GLuint lightShader;
     GLuint skyBoxShader;
     GLuint waterShader;
-
+    GLuint glassShader;
+    GLuint skyBoxTexture;
     GLuint cubeTexture;
 
     Mesh* duck;
