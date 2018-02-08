@@ -44,6 +44,8 @@ private:
     GLuint skyBoxShader;
     GLuint waterShader;
     GLuint glassShader;
+    GLuint fishEyeShader;
+
     GLuint skyBoxTexture;
     GLuint cubeTexture;
 

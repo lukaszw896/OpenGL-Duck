@@ -64,8 +64,31 @@ Renderer::Renderer() {
     ShaderLoader::loadProgram(&lightShader, "res/shaders/standardVertexShader.vs",
                               "res/shaders/lightColorFragmentShader.fs");
 
-    //Cube map
+    ShaderLoader::loadProgram(&fishEyeShader, "res/shaders/fisheye.vs",
+                              "res/shaders/lightColorFragmentShader.fs" );
 
+   /* Mesh *quad = meshLoader.getQuad();
+    quad->loadProgram(fishEyeShader);
+    //quad->loadTexture(texture);
+    quad->setTranslation(0.f, 0.f, 0.0f);
+    //quad->setXRotation(-3.14/2);
+    quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
+    //quad->setYRotation(-3.14/2);
+    quad->setScale(300.f);
+    meshVector.push_back(quad);
+
+    Mesh *cubes;
+    cubes = meshLoader.getCube();
+    cubes->loadProgram(glassShader);
+    cubes->loadTexture(skyBoxTexture);
+    // cubes->loadTexture(cubeTexture);
+    // cubes->loadDiffuseMap(diffuseTexture);
+    // cubes->loadSpecularMap(specularTexture);
+    cubes->setTranslation(0.0f, 0.5f, 0.0f);
+    meshVector.push_back(cubes);*/
+
+    //Cube map
+  //MAIN SCENE
     vector<const GLchar *> faces;
     faces.push_back("res/textures/sor_sea/sea_rt.jpg");
     faces.push_back("res/textures/sor_sea/sea_lf.jpg");
@@ -122,7 +145,7 @@ Renderer::Renderer() {
     // cubes->loadTexture(cubeTexture);
    // cubes->loadDiffuseMap(diffuseTexture);
    // cubes->loadSpecularMap(specularTexture);
-    cubes->setTranslation(0.0f, 0.5f, 0.0f);
+    cubes->setTranslation(0.0f, -0.0f, 0.0f);
     meshVector.push_back(cubes);
 
     GLuint bilboardProgram;
@@ -172,6 +195,7 @@ Renderer::Renderer() {
     lamp->setTranslation(lightPos);
     lamp->setScale(0.5f);
     meshVector.push_back(lamp);
+
 }
 
 void Renderer::moveParticles(GLfloat dt) {
