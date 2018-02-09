@@ -83,6 +83,10 @@ private:
     GLuint loadCubemap(vector<const GLchar*> faces);
 
     void do_movement();
+    void prepareDuckScene();
+    void drawDuckScene();
+    void prepareFishEyeScene();
+    void drawFishEyeScene();
 
 };
 

@@ -49,152 +49,10 @@ Renderer::Renderer() {
 
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_FOG);                   // Enables GL_FOG
-    //init objects
-    lightPos = glm::vec3(20.5f, 8.0f, -0.0f);
 
-    MeshLoader &meshLoader = MeshLoader::getMeshLoaderInstance();
-    duckMovement = DuckMovement();
+    //this->prepareDuckScene();
+    this->prepareFishEyeScene();
 
-    lightShader;
-    //ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
-    GLuint diffuseTexture;
-    loadTexture(&diffuseTexture, "res/textures/container2.png");
-    GLuint specularTexture;
-    loadTexture(&specularTexture, "res/textures/container2_specular.png");
-    ShaderLoader::loadProgram(&lightShader, "res/shaders/standardVertexShader.vs",
-                              "res/shaders/lightColorFragmentShader.fs");
-
-    ShaderLoader::loadProgram(&fishEyeShader, "res/shaders/fisheye.vs",
-                              "res/shaders/lightColorFragmentShader.fs" );
-
-   /* Mesh *quad = meshLoader.getQuad();
-    quad->loadProgram(fishEyeShader);
-    //quad->loadTexture(texture);
-    quad->setTranslation(0.f, 0.f, 0.0f);
-    //quad->setXRotation(-3.14/2);
-    quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
-    //quad->setYRotation(-3.14/2);
-    quad->setScale(300.f);
-    meshVector.push_back(quad);
-
-    Mesh *cubes;
-    cubes = meshLoader.getCube();
-    cubes->loadProgram(glassShader);
-    cubes->loadTexture(skyBoxTexture);
-    // cubes->loadTexture(cubeTexture);
-    // cubes->loadDiffuseMap(diffuseTexture);
-    // cubes->loadSpecularMap(specularTexture);
-    cubes->setTranslation(0.0f, 0.5f, 0.0f);
-    meshVector.push_back(cubes);*/
-
-    //Cube map
-  //MAIN SCENE
-    vector<const GLchar *> faces;
-    faces.push_back("res/textures/sor_sea/sea_rt.jpg");
-    faces.push_back("res/textures/sor_sea/sea_lf.jpg");
-    faces.push_back("res/textures/sor_sea/sea_up.jpg");
-    faces.push_back("res/textures/sor_sea/sea_dn.jpg");
-    faces.push_back("res/textures/sor_sea/sea_bk.jpg");
-    faces.push_back("res/textures/sor_sea/sea_ft.jpg");
-     skyBoxTexture = loadCubemap(faces);
-
-    ShaderLoader::loadProgram(&skyBoxShader, "res/shaders/skyBoxVertexShader.vs",
-                              "res/shaders/skyBoxFragmentShader.fs");
-
-    ShaderLoader::loadProgram(&glassShader,"res/shaders/glass.vs",
-                              "res/shaders/glass.fs");
-    skyBox = meshLoader.getSkyBox();
-
-    skyBox->loadTexture(skyBoxTexture);
-    skyBox->loadProgram(skyBoxShader);
-    skyBox->setScale(10.0f);
-
-    GLuint duckTex;
-    loadTexture(&duckTex, "res/textures/ducktex.jpg");
-    duck = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{5.0f, 0.0f, 7.0f}, 0.002);
-    meshVector.push_back(duck);
-    duck2 = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{-5.0f, 0.0f, -12.0f}, 0.002);
-
-
-    GLuint sphereProgram;
-    ShaderLoader::loadProgram(&sphereProgram,"res/shaders/standardVertexShader.vs",
-                              "res/shaders/color.fs");
-    mySphere = meshLoader.getSphere();
-    mySphere->loadProgram(sphereProgram);
-    //mySphere->setTranslation(-1.3f, 1.0f, -1.5f);
-    meshVector.push_back(mySphere);
-
-    meshVector.push_back(duck2);
-    waterShader;
-    ShaderLoader::loadProgram(&waterShader, "res/shaders/waterReflectionVertexShader.vs",
-                              "res/shaders/waterReflectionFragmentShader.fs");
-    Mesh *quad = meshLoader.getQuad();
-    quad->loadProgram(waterShader);
-    //quad->loadTexture(texture);
-    quad->setTranslation(0.f, 0.f, 0.0f);
-    //quad->setXRotation(-3.14/2);
-    quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
-    //quad->setYRotation(-3.14/2);
-    quad->setScale(300.f);
-    meshVector.push_back(quad);
-
-    Mesh *cubes;
-    cubes = meshLoader.getCube();
-    cubes->loadProgram(glassShader);
-    cubes->loadTexture(skyBoxTexture);
-    // cubes->loadTexture(cubeTexture);
-   // cubes->loadDiffuseMap(diffuseTexture);
-   // cubes->loadSpecularMap(specularTexture);
-    cubes->setTranslation(0.0f, -0.0f, 0.0f);
-    meshVector.push_back(cubes);
-
-    GLuint bilboardProgram;
-    ShaderLoader::loadProgram(&bilboardProgram,"res/shaders/billboard.vs",
-                              "res/shaders/billboard.fs");
-    GLuint fireTex;
-    loadTexture(&fireTex, "res/textures/alphaFire.png");
-    Mesh* bilboard = meshLoader.getQuad();
-    bilboard->loadProgram(bilboardProgram);
-    bilboard->loadDiffuseMap(fireTex);
-    bilboard->setRotation(0.0f,-1.5f,0.0f);
-    bilboard->setTranslation(0.0f,1.5f,0.0f);
-    meshVector.push_back(bilboard);
-
-    GLuint particleProgram;
-    ShaderLoader::loadProgram(&particleProgram,"res/shaders/billboard.vs",
-                              "res/shaders/billboard.fs");
-  /* GLuint particleTex;
-    loadTexture(&particleTex, "res/textures/particle.png");*/
-    for(int i=0;i<200;i++)
-    {
-        GLfloat posX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        GLfloat posY = 1.75f+ static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        GLfloat posZ = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        Mesh* particle = meshLoader.getQuad();
-        particle->loadProgram(particleProgram);
-        particle->loadDiffuseMap(fireTex);
-        particle->xDirection = -0.1f +static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        particle->yDirection = 1.0f;
-        particle->zDirection = -0.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/0.2f));
-        particle->speed = 1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f));
-        particle->meshType = particleBilboard;
-       particle->setScale(0.025f);
-        particle->setOrigin(vec3(posX,posY,posZ));
-        particle->setTranslation(posX,posY,posZ);
-        particleVector.push_back(particle);
-        meshVector.push_back(particle);
-    }
-
-
-
-    GLuint lampShader;
-    ShaderLoader::loadProgram(&lampShader, "res/shaders/lampVertexShader.vs", "res/shaders/lampFragmentShader.fs");
-
-    Mesh *lamp = meshLoader.getCube();
-    lamp->loadProgram(lampShader);
-    lamp->setTranslation(lightPos);
-    lamp->setScale(0.5f);
-    meshVector.push_back(lamp);
 
 }
 
@@ -226,77 +84,8 @@ void Renderer::render() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        moveParticles(deltaTime);
-        lastFrame = currentFrame;
-        glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
-        glm::vec3 duckTranslation = vec3(duckPosition.x,-0.04,duckPosition.y);
-        duck->setTranslationWithRespectToOrigin(duckTranslation);
-        duck2->setTranslationWithRespectToOrigin(duckTranslation);
-        glm::vec2 md = duckMovement.getMovementDirection();
-        //CALCULATE ROTATION
-        float angle = acos(md.x/sqrt(pow(md.x,2)+pow(md.y,2)));
-        duck->setRotation(0.0,angle+3.14,0.0);
-        duck2->setRotation(0.0,angle+3.14,0.0);
-        glUseProgram(waterShader);
-        GLint viewPosLoc = glGetUniformLocation(waterShader, "viewPos");
-        glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
-        //FIRST DRAW SKYBOX
-        //skyBox->setScale(5.f);
-
-
-        glUseProgram(lightShader);
-        GLint objectColorLoc = glGetUniformLocation(lightShader, "objectColor");
-        GLint lightColorLoc  = glGetUniformLocation(lightShader, "lightColor");
-        GLint lightPosLoc = glGetUniformLocation(lightShader, "lightPos");
-        viewPosLoc = glGetUniformLocation(lightShader, "viewPos");
-        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-        glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
-
-        /*GLint matAmbientLoc  = glGetUniformLocation(lightShader, "material.ambient");
-        GLint matDiffuseLoc  = glGetUniformLocation(lightShader, "material.diffuse");*/
-        GLint matSpecularLoc = glGetUniformLocation(lightShader, "material.specular");
-        GLint matShineLoc    = glGetUniformLocation(lightShader, "material.shininess");
-
-        /*glUniform3f(matAmbientLoc,  1.0f, 0.5f, 0.31f);
-        glUniform3f(matDiffuseLoc,  1.0f, 0.5f, 0.31f);*/
-        glUniform3f(matSpecularLoc, 0.9f, 0.9f, 0.9f);
-        glUniform1f(matShineLoc,    32.0f);
-
-        GLint lightAmbientLoc  = glGetUniformLocation(lightShader, "light.ambient");
-        GLint lightDiffuseLoc  = glGetUniformLocation(lightShader, "light.diffuse");
-        GLint lightSpecularLoc = glGetUniformLocation(lightShader, "light.specular");
-
-        glm::vec3 lightColor;
-       /* lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);*/
-        lightColor.x = 1.f;
-        lightColor.y = 1.f;
-        lightColor.z = 1.f;
-
-        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // Decrease the influence
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // Low influence
-
-        glUniform3f(lightAmbientLoc, ambientColor.x, ambientColor.y, ambientColor.z);
-        glUniform3f(lightDiffuseLoc, diffuseColor.x, diffuseColor.y, diffuseColor.z);
-        glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
-
-        glUniform1i(glGetUniformLocation(lightShader, "material.diffuse"), 0);
-        glUniform1i(glGetUniformLocation(lightShader, "material.specular"), 1);
-        //UNIFORM EXAMPLE
-        /*// Update the uniform color
-        GLfloat timeValue = glfwGetTime();
-        GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-        GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
-        do_movement();
-        camera.updateCameraView();
-        skyBox->setTranslation(camera.cameraPos);
-        skyBox->renderAsSkyBox();
+        this->drawFishEyeScene();
+        //this->drawDuckScene();
 
         for(int i=0;i<meshVector.size();i++){meshVector[i]->render();}
         glfwSwapBuffers(window);
@@ -306,6 +95,262 @@ void Renderer::render() {
     glfwTerminate();
 
     return ;
+}
+
+void Renderer::prepareFishEyeScene(){
+
+    lightPos = glm::vec3(20.5f, 8.0f, -0.0f);
+
+    MeshLoader &meshLoader = MeshLoader::getMeshLoaderInstance();
+    //ShaderLoader::loadProgram(&fishEyeShader, "res/shaders/basicVertexShader.txt","res/shaders/color.fs" );
+    ShaderLoader::loadProgram(&fishEyeShader, "res/shaders/fisheye.vs","res/shaders/color.fs" );
+    Mesh *cubes;
+    cubes = meshLoader.getCube();
+    cubes->loadProgram(fishEyeShader);
+    //cubes->loadTexture(skyBoxTexture);
+    // cubes->loadTexture(cubeTexture);
+    // cubes->loadDiffuseMap(diffuseTexture);
+    // cubes->loadSpecularMap(specularTexture);
+    cubes->setTranslation(0.0f, 0.5f, 0.0f);
+    meshVector.push_back(cubes);
+}
+
+void Renderer::prepareDuckScene() {
+    //init objects
+    lightPos = glm::vec3(20.5f, 8.0f, -0.0f);
+
+    MeshLoader &meshLoader = MeshLoader::getMeshLoaderInstance();
+    duckMovement = DuckMovement();
+
+    lightShader;
+    //ShaderLoader::loadProgram(&shaderProgram,"res/shaders/basicVertexShader.txt","res/shaders/basicFragmentShader.txt");
+    GLuint diffuseTexture;
+    loadTexture(&diffuseTexture, "res/textures/container2.png");
+    GLuint specularTexture;
+    loadTexture(&specularTexture, "res/textures/container2_specular.png");
+    ShaderLoader::loadProgram(&lightShader, "res/shaders/standardVertexShader.vs",
+                              "res/shaders/lightColorFragmentShader.fs");
+
+    ShaderLoader::loadProgram(&fishEyeShader, "res/shaders/basicVertexShader.txt","res/shaders/color.fs" );
+    //ShaderLoader::loadProgram(&fishEyeShader, "res/shaders/fisheye.vs","res/shaders/color.fs" );
+    /*Mesh *fish;
+    fish = meshLoader.getCube();
+    fish->loadProgram(fishEyeShader);
+    //cubes->loadTexture(skyBoxTexture);
+    // cubes->loadTexture(cubeTexture);
+    // cubes->loadDiffuseMap(diffuseTexture);
+    // cubes->loadSpecularMap(specularTexture);
+    fish->setTranslation(0.0f, 0.5f, 0.0f);
+    meshVector.push_back(fish);*/
+
+    /* Mesh *quad = meshLoader.getQuad();
+     quad->loadProgram(fishEyeShader);
+     //quad->loadTexture(texture);
+     quad->setTranslation(0.f, 0.f, 0.0f);
+     //quad->setXRotation(-3.14/2);
+     quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
+     //quad->setYRotation(-3.14/2);
+     quad->setScale(300.f);
+     meshVector.push_back(quad);
+
+     Mesh *cubes;
+     cubes = meshLoader.getCube();
+     cubes->loadProgram(glassShader);
+     cubes->loadTexture(skyBoxTexture);
+     // cubes->loadTexture(cubeTexture);
+     // cubes->loadDiffuseMap(diffuseTexture);
+     // cubes->loadSpecularMap(specularTexture);
+     cubes->setTranslation(0.0f, 0.5f, 0.0f);
+     meshVector.push_back(cubes);*/
+
+    //Cube map
+    //MAIN SCENE
+    vector<const GLchar *> faces;
+    faces.push_back("res/textures/sor_sea/sea_rt.jpg");
+    faces.push_back("res/textures/sor_sea/sea_lf.jpg");
+    faces.push_back("res/textures/sor_sea/sea_up.jpg");
+    faces.push_back("res/textures/sor_sea/sea_dn.jpg");
+    faces.push_back("res/textures/sor_sea/sea_bk.jpg");
+    faces.push_back("res/textures/sor_sea/sea_ft.jpg");
+    skyBoxTexture = loadCubemap(faces);
+
+    ShaderLoader::loadProgram(&skyBoxShader, "res/shaders/skyBoxVertexShader.vs",
+                              "res/shaders/skyBoxFragmentShader.fs");
+
+    ShaderLoader::loadProgram(&glassShader, "res/shaders/glass.vs",
+                              "res/shaders/glass.fs");
+    skyBox = meshLoader.getSkyBox();
+
+    skyBox->loadTexture(skyBoxTexture);
+    skyBox->loadProgram(skyBoxShader);
+    skyBox->setScale(10.0f);
+
+    GLuint duckTex;
+    loadTexture(&duckTex, "res/textures/ducktex.jpg");
+    duck = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{5.0f, 0.0f, 7.0f}, 0.002);
+    meshVector.push_back(duck);
+    duck2 = meshLoader.getDuck(duckTex, duckTex, duckTex, lightShader, vec3{-5.0f, 0.0f, -12.0f}, 0.002);
+
+
+    GLuint sphereProgram;
+    ShaderLoader::loadProgram(&sphereProgram, "res/shaders/standardVertexShader.vs",
+                              "res/shaders/color.fs");
+    mySphere = meshLoader.getSphere();
+    mySphere->loadProgram(sphereProgram);
+    //mySphere->setTranslation(-1.3f, 1.0f, -1.5f);
+    meshVector.push_back(mySphere);
+
+    meshVector.push_back(duck2);
+    waterShader;
+    ShaderLoader::loadProgram(&waterShader, "res/shaders/waterReflectionVertexShader.vs",
+                              "res/shaders/waterReflectionFragmentShader.fs");
+    Mesh *quad = meshLoader.getQuad();
+    quad->loadProgram(waterShader);
+    //quad->loadTexture(texture);
+    quad->setTranslation(0.f, 0.f, 0.0f);
+    //quad->setXRotation(-3.14/2);
+    quad->setRotation(3.14 / 2, 0.0f, 3.14 / 2);
+    //quad->setYRotation(-3.14/2);
+    quad->setScale(300.f);
+    meshVector.push_back(quad);
+
+    Mesh *cubes;
+    cubes = meshLoader.getCube();
+    cubes->loadProgram(glassShader);
+    cubes->loadTexture(skyBoxTexture);
+    // cubes->loadTexture(cubeTexture);
+    // cubes->loadDiffuseMap(diffuseTexture);
+    // cubes->loadSpecularMap(specularTexture);
+    cubes->setTranslation(0.0f, -0.0f, 0.0f);
+    meshVector.push_back(cubes);
+
+    GLuint bilboardProgram;
+    ShaderLoader::loadProgram(&bilboardProgram, "res/shaders/billboard.vs",
+                              "res/shaders/billboard.fs");
+    GLuint fireTex;
+    loadTexture(&fireTex, "res/textures/alphaFire.png");
+    Mesh *bilboard = meshLoader.getQuad();
+    bilboard->loadProgram(bilboardProgram);
+    bilboard->loadDiffuseMap(fireTex);
+    bilboard->setRotation(0.0f, -1.5f, 0.0f);
+    bilboard->setTranslation(0.0f, 1.5f, 0.0f);
+    meshVector.push_back(bilboard);
+
+    GLuint particleProgram;
+    ShaderLoader::loadProgram(&particleProgram, "res/shaders/billboard.vs",
+                              "res/shaders/billboard.fs");
+    /* GLuint particleTex;
+      loadTexture(&particleTex, "res/textures/particle.png");*/
+    for (int i = 0; i < 200; i++) {
+        GLfloat posX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 0.2f));
+        GLfloat posY = 1.75f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 0.2f));
+        GLfloat posZ = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 0.2f));
+        Mesh *particle = meshLoader.getQuad();
+        particle->loadProgram(particleProgram);
+        particle->loadDiffuseMap(fireTex);
+        particle->xDirection = -0.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 0.2f));
+        particle->yDirection = 1.0f;
+        particle->zDirection = -0.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 0.2f));
+        particle->speed = 1.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2.0f));
+        particle->meshType = particleBilboard;
+        particle->setScale(0.025f);
+        particle->setOrigin(vec3(posX, posY, posZ));
+        particle->setTranslation(posX, posY, posZ);
+        particleVector.push_back(particle);
+        meshVector.push_back(particle);
+    }
+
+
+    GLuint lampShader;
+    ShaderLoader::loadProgram(&lampShader, "res/shaders/lampVertexShader.vs", "res/shaders/lampFragmentShader.fs");
+
+    Mesh *lamp = meshLoader.getCube();
+    lamp->loadProgram(lampShader);
+    lamp->setTranslation(lightPos);
+    lamp->setScale(0.5f);
+    meshVector.push_back(lamp);
+}
+
+void Renderer::drawFishEyeScene() {
+    GLfloat currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+    this->do_movement();
+    this->camera.updateCameraView();
+}
+
+void Renderer::drawDuckScene() {
+    GLfloat currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    moveParticles(deltaTime);
+    lastFrame = currentFrame;
+    glm::vec2 duckPosition = duckMovement.getCoords(deltaTime);
+    glm::vec3 duckTranslation = vec3(duckPosition.x,-0.04,duckPosition.y);
+    duck->setTranslationWithRespectToOrigin(duckTranslation);
+    duck2->setTranslationWithRespectToOrigin(duckTranslation);
+    glm::vec2 md = duckMovement.getMovementDirection();
+    //CALCULATE ROTATION
+    float angle = acos(md.x/sqrt(pow(md.x,2)+pow(md.y,2)));
+    duck->setRotation(0.0,angle+3.14,0.0);
+    duck2->setRotation(0.0,angle+3.14,0.0);
+    glUseProgram(waterShader);
+    GLint viewPosLoc = glGetUniformLocation(waterShader, "viewPos");
+    glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
+    //FIRST DRAW SKYBOX
+    //skyBox->setScale(5.f);
+
+
+    glUseProgram(lightShader);
+    GLint objectColorLoc = glGetUniformLocation(lightShader, "objectColor");
+    GLint lightColorLoc  = glGetUniformLocation(lightShader, "lightColor");
+    GLint lightPosLoc = glGetUniformLocation(lightShader, "lightPos");
+    viewPosLoc = glGetUniformLocation(lightShader, "viewPos");
+    glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+    glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
+    glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+    glUniform3f(viewPosLoc, camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z);
+
+    /*GLint matAmbientLoc  = glGetUniformLocation(lightShader, "material.ambient");
+    GLint matDiffuseLoc  = glGetUniformLocation(lightShader, "material.diffuse");*/
+    GLint matSpecularLoc = glGetUniformLocation(lightShader, "material.specular");
+    GLint matShineLoc    = glGetUniformLocation(lightShader, "material.shininess");
+
+    /*glUniform3f(matAmbientLoc,  1.0f, 0.5f, 0.31f);
+    glUniform3f(matDiffuseLoc,  1.0f, 0.5f, 0.31f);*/
+    glUniform3f(matSpecularLoc, 0.9f, 0.9f, 0.9f);
+    glUniform1f(matShineLoc,    32.0f);
+
+    GLint lightAmbientLoc  = glGetUniformLocation(lightShader, "light.ambient");
+    GLint lightDiffuseLoc  = glGetUniformLocation(lightShader, "light.diffuse");
+    GLint lightSpecularLoc = glGetUniformLocation(lightShader, "light.specular");
+
+    glm::vec3 lightColor;
+    /* lightColor.x = sin(glfwGetTime() * 2.0f);
+     lightColor.y = sin(glfwGetTime() * 0.7f);
+     lightColor.z = sin(glfwGetTime() * 1.3f);*/
+    lightColor.x = 1.f;
+    lightColor.y = 1.f;
+    lightColor.z = 1.f;
+
+    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // Decrease the influence
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // Low influence
+
+    glUniform3f(lightAmbientLoc, ambientColor.x, ambientColor.y, ambientColor.z);
+    glUniform3f(lightDiffuseLoc, diffuseColor.x, diffuseColor.y, diffuseColor.z);
+    glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+
+    glUniform1i(glGetUniformLocation(lightShader, "material.diffuse"), 0);
+    glUniform1i(glGetUniformLocation(lightShader, "material.specular"), 1);
+    //UNIFORM EXAMPLE
+    /*// Update the uniform color
+    GLfloat timeValue = glfwGetTime();
+    GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+    GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
+    do_movement();
+    camera.updateCameraView();
+    skyBox->setTranslation(camera.cameraPos);
+    skyBox->renderAsSkyBox();
 }
 
 void Renderer::my_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
